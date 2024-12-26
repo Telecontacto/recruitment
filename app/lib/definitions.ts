@@ -2,6 +2,56 @@
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
+export type attendantStatus = {
+  id: number;
+  name: string;
+  status: 'received' | 'review' | 'interview' | 'offered' | 'Rejected' | 'Hired';
+  printed: string;
+}
+
+export type changeAttendantStatus = {
+  id: number;
+  status: 'received' | 'review' | 'interview' | 'offered' | 'Rejected' | 'Hired';
+}
+
+export type StageData = {
+  id: number;
+  nombre: string;
+  statussolicitud: string;
+  printed: string;
+};
+
+export type Stages = {
+  Received: StageData[];
+  "In Review": StageData[];
+  Interview: StageData[];
+  Offered: StageData[];
+  "Hired/Rejected": StageData[];
+};
+
+export type ModalProps = {
+  isOpen: boolean;
+  color: string;
+  message: string;
+}
+
+export type DeleteModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  validateDelete:(choice: string) => void;
+}
+
+export type HRModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  validateAnswer:(choice: string) => void;
+}
+
+export type deleteApplicant = {
+  id: number;
+}
+
+// Here onwards are part of the Demo
 export type User = {
   id: string;
   name: string;
