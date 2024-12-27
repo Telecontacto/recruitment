@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect } from "react";
-//import "./Snowflakes.css"; // Add relevant styles here
 
 const Snowfall: React.FC = () => {
     const snowflakeCount = 10; // Number of snowflakes
