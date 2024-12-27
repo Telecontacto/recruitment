@@ -81,8 +81,8 @@ export default function ReviewApplication({
         <div>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs">
-                        <Tab label="Validate Information" {...a11yProps(0)} sx={{ backgroundColor: '#e51e25' }} />
+                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='secondary'>
+                        <Tab label="Validate Information" {...a11yProps(0)} />
                         <Tab label="Questions" {...a11yProps(1)} />
                         <Tab label="Schedule Interview" {...a11yProps(2)} />
                     </Tabs>
