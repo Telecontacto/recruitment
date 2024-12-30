@@ -99,8 +99,8 @@ export default function ReviewApplication({
                     <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='secondary'>
                         <Tab label="Validate Information" {...a11yProps(0)} />
                         <Tab label="Questions" {...a11yProps(1)} />
-                        <Tab label="Continuation" {...a11yProps(2)} />
-                        <Tab label="Schedule Interview" {...a11yProps(3)} />
+                        <Tab label="Schedule Interview" {...a11yProps(2)} />
+                        <Tab label="Attempts" {...a11yProps(3)} />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
@@ -331,10 +331,6 @@ export default function ReviewApplication({
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
                         <div className='grid gap-2'>
                             <div className="mb-4">
                                 <label className="mb-2 block text-lg font-medium">
@@ -385,9 +381,14 @@ export default function ReviewApplication({
                         </div>
                     </div>
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={3}>
+                <CustomTabPanel value={value} index={2}>
                     <div className="rounded-md bg-gray-50 p-4 md:p-6">
                         <Calendar />
+                    </div>
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={3}>
+                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+
                     </div>
                 </CustomTabPanel>
             </Box >

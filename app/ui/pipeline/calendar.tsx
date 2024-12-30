@@ -83,7 +83,7 @@ const Calendar: React.FC = () => {
                 {Array.from({ length: daysInMonth }, (_, index) => (
                     <div
                         key={index + 1}
-                        className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}` ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+                        className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}` ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
                         onClick={() => handleDayClick(index + 1)}
                     >
                         {index + 1}
