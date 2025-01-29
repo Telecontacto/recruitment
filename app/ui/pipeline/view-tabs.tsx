@@ -67,7 +67,7 @@ export default function ViewApplication({
         <div>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} centered aria-label="basic tabs example">
+                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='secondary'>
                         <Tab label="Personal Information" {...a11yProps(0)} />
                         <Tab label="Work & Hours Information" {...a11yProps(1)} />
                         <Tab label="Languages & Education" {...a11yProps(2)} />
@@ -75,7 +75,7 @@ export default function ViewApplication({
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6">
                         <div className='grid grid-cols-4 gap-2'>
                             <div className="mb-4">
                                 <label className="mb-2 block text-lg font-medium">
@@ -284,7 +284,7 @@ export default function ViewApplication({
                     </div>
                 </CustomTabPanel >
                 <CustomTabPanel value={value} index={1}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6">
                         <div className='grid grid-cols-2 gap-2'>
                             <div className="mb-4">
                                 <label className="mb-2 block text-lg font-medium">
@@ -331,7 +331,7 @@ export default function ViewApplication({
                     </div>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6">
                         <fieldset>
                             <legend className="mb-2 block text-lg font-medium">
                                 Languages
@@ -639,7 +639,7 @@ export default function ViewApplication({
                     </div>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={3}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6">
                         <fieldset>
                             <legend className="mb-2 block text-lg font-medium">
                                 Past Employments

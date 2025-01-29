@@ -16,6 +16,37 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0;
 }
 
+/* Define CSS variables for light and dark modes */
+:root {
+  --bg-color-light: #ffffff;
+  --text-color-light: #000000;
+  --bg-color-dark: #000000;
+  --text-color-dark: #ffffff;
+}
+
+body.light {
+  --bg-color: var(--bg-color-light);
+  --text-color: var(--text-color-light);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+body.dark {
+  --bg-color: var(--bg-color-dark);
+  --text-color: var(--text-color-dark);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Additional styles for dark mode */
+.dark .bg-gray-200 {
+  background-color: #333333;
+}
+
+.dark .bg-gray-800 {
+  background-color: #111111;
+}
+
 .gunmetal {
   color: white;
   background-color: #233239;
@@ -71,7 +102,8 @@ input[type='number']::-webkit-inner-spin-button {
 .snowflake {
   position: absolute;
   top: -20px;
-  color: rgb(133, 211, 236);
+  /* color: rgb(133, 211, 236); */
+  color: rgb(255, 0, 0);
   /* White snowflakes */
   user-select: none;
   z-index: -1;

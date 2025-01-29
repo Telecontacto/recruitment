@@ -1,6 +1,11 @@
-'use client';
+
 import Form from "@/app/ui/pipeline/form";
 import { montserrat } from '@/app/ui/fonts';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Pipeline',
+};
 
 
 export default function Page() {

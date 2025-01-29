@@ -7,7 +7,7 @@ import Modal, { DeleteModal, HireRejectedModal } from '@/app/ui/pipeline/modal';
 import {
     TrashIcon
 } from '@heroicons/react/24/outline';
-//import { submitHandler } from '@/app/api/queryHandle/fetchApi';
+import { PipelineSkeleton } from '@/app/ui/skeletons';
 
 export function Pipeline({
     title,
@@ -30,7 +30,7 @@ export function Pipeline({
     return (
         <>
             <div
-                className="stage overflow-y-auto"
+                className="stage overflow-y-auto bg-white dark:bg-gray-800"
                 onDragOver={(e) => e.preventDefault()} // Allow drop
                 onDrop={() => onDrop(title)} // Handle drop
             >
@@ -41,7 +41,7 @@ export function Pipeline({
                             key={item.id}
                             draggable="true"
                             className={clsx(
-                                `applicant ${montserrat.className}`,
+                                `applicant bg-gray-50 dark:bg-gray-600 ${montserrat.className}`,
                                 {
                                     "applicant-hired": item.statussolicitud === "Hired",
                                     "applicant-rejected": item.statussolicitud === "Rejected",
@@ -49,7 +49,7 @@ export function Pipeline({
                             )}
                             onDragStart={() => onDragStart(item)} // Start dragging
                         >
-                            <a href={`/dashboard/pipeline/${item.id}/${step}`}>
+                            <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
                                 <strong>
                                     {item.nombre}
                                     {item.printed === "NO" && (
@@ -71,7 +71,7 @@ export function BlankPipeline({
     title: string;
 }) {
     return (
-        <div className="stage">
+        <div className="stage bg-gray-200 dark:bg-gray-800">
             <h2 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>{title}</h2>
         </div>
     );
@@ -289,19 +289,19 @@ export function Pipelines({
 
     if (!results) {
         return (
-            <div className="stages text-center bg-gray-50">
-                <BlankPipeline title="Received" />
-                <BlankPipeline title="In Review" />
-                <BlankPipeline title="Interview" />
-                <BlankPipeline title="Offered" />
-                <BlankPipeline title="Hired/Rejected" />
+            <div className="stages text-center bg-gray-200">
+                <PipelineSkeleton />
+                <PipelineSkeleton />
+                <PipelineSkeleton />
+                <PipelineSkeleton />
+                <PipelineSkeleton />
             </div>
         )
     }
 
     return (
         <>
-            <div className="stages text-center bg-gray-50">
+            <div className="stages text-center bg-gray-200">
                 <div
                     className="trash-icon h-10 w-10 text-red-500"
                     onDragOver={(e) => e.preventDefault()}

@@ -16,7 +16,7 @@ export default async function Page() {
       <h1 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>
         Dashboard
       </h1>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 bg-gray-200 p-4 rounded-md">
         <Suspense fallback={<CardsSkeleton />}>
           <CardWrapper />
         </Suspense>

@@ -2,13 +2,14 @@
 import React, { useEffect } from "react";
 
 const Snowfall: React.FC = () => {
-    const snowflakeCount = 10; // Number of snowflakes
+    const snowflakeCount = 5; // Number of snowflakes
 
     const createSnowflakes = () => {
         for (let i = 0; i < snowflakeCount; i++) {
             const snowflake = document.createElement("div");
             snowflake.classList.add("snowflake");
-            snowflake.innerHTML = "&#10052;"; // Unicode snowflake symbol
+            //snowflake.innerHTML = "&#10052;"; // Unicode snowflake symbol
+            snowflake.innerHTML = "&#10084;"; // Unicode heart symbol
 
             // Random positioning and animation duration
             snowflake.style.left = `${Math.random() * window.innerWidth}px`;

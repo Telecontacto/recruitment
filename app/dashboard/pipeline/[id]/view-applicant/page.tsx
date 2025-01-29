@@ -5,6 +5,11 @@ import { notFound } from 'next/navigation';
 import { fetchApplicant } from '@/app/api/queryHandle/fetchApi'
 import { montserrat } from '@/app/ui/fonts';
 import ViewApplication from '@/app/ui/pipeline/view-tabs'
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'View Applicant',
+};
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;

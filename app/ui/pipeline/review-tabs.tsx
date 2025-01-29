@@ -1,10 +1,12 @@
 'use client';
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useContext, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import AttemptsTab from '@/app/ui/pipeline/AttemptsTab';
 import Box from '@mui/material/Box';
-import EditApplicationForm from '@/app/ui/pipeline/edit-form';
 import Calendar from '@/app/ui/pipeline/calendar';
+import { Metadata } from 'next';
+import { ThemeContext } from '@/app/context/ThemeContext'; // Import ThemeContext
 import {
     HomeIcon,
     ClockIcon,
@@ -25,6 +27,11 @@ import {
     ComputerDesktopIcon,
     MegaphoneIcon
 } from '@heroicons/react/24/outline';
+
+export const metadata: Metadata = {
+    title: "Review Applicant",
+};
+
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -75,10 +82,14 @@ export default function ReviewApplication({
     data: any;
 }) {
     const [info, setInfo] = useState(data[0]);
-
-    //console.log(info)
-
     const [value, setValue] = useState(0);
+    const [attempts, setAttempts] = useState([{ contacted: '', notes: '' }]);
+    const themeContext = useContext(ThemeContext);
+    if (!themeContext) {
+        throw new Error('ThemeContext must be used within a ThemeProvider');
+    }
+    const { isDarkMode } = themeContext; // Use ThemeContext
+    const [tabClassName, setTabClassName] = useState('text-gray-900');
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -92,11 +103,29 @@ export default function ReviewApplication({
         }));
     };
 
+    useEffect(() => {
+        setTabClassName(isDarkMode ? 'text-gray-300' : 'text-black');
+    }, [isDarkMode]);
+
+    function handleAttemptChange(index: number, field: string, value: string): void {
+        setInfo((prevInfo: any) => {
+            const updatedAttempts = [...prevInfo.attempts];
+            updatedAttempts[index] = {
+                ...updatedAttempts[index],
+                [field]: value,
+            };
+            return {
+                ...prevInfo,
+                attempts: updatedAttempts,
+            };
+        });
+    }
+
     return (
-        <div>
+        <div className={isDarkMode ? 'dark' : ''}>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='secondary'>
+                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='inherit' className={tabClassName}>
                         <Tab label="Validate Information" {...a11yProps(0)} />
                         <Tab label="Questions" {...a11yProps(1)} />
                         <Tab label="Schedule Interview" {...a11yProps(2)} />
@@ -104,7 +133,7 @@ export default function ReviewApplication({
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
                         <div className='grid grid-cols-3 gap-2'>
                             <div className="mb-4">
                                 <label className="mb-2 block text-lg font-medium">
@@ -112,10 +141,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue={info.Nombre}
                                     />
-                                    <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -124,10 +153,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue={info.Celular}
                                     />
-                                    <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -136,10 +165,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue={info.Email}
                                     />
-                                    <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                         </div>
@@ -147,7 +176,7 @@ export default function ReviewApplication({
                             <legend className="mb-2 block text-lg font-medium">
                                 Week Schedule Availability
                             </legend>
-                            <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
+                            <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3 dark:bg-gray-700 dark:border-gray-600">
                                 <div className='grid grid-cols-4 gap-2'>
                                     <ScheduleInputs day="Monday" from={info.LunesDesde} to={info.LunesHasta} />
                                     <ScheduleInputs day="Tuesday" from={info.MartesDesde} to={info.MartesHasta} />
@@ -162,7 +191,7 @@ export default function ReviewApplication({
                     </div>
                 </CustomTabPanel >
                 <CustomTabPanel value={value} index={1}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
                         <div className='grid grid-cols-4 gap-2'>
                             <div className="mb-4">
                                 <label className="mb-2 block text-lg font-medium">
@@ -170,10 +199,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -182,13 +211,13 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <select
-                                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''>
                                         <option value=''>Select an option</option>
                                         <option value='Yes'>Yes</option>
                                         <option value='No'>No</option>
                                     </select>
-                                    <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -197,10 +226,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue={info.FechaViaje !== '' ? info.FechaViaje : 'No planned trips'}
                                     />
-                                    <PaperAirplaneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <PaperAirplaneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -209,10 +238,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <BuildingOfficeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <BuildingOfficeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                         </div>
@@ -223,10 +252,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <AcademicCapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <AcademicCapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -235,10 +264,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <BuildingLibraryIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <BuildingLibraryIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -247,10 +276,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <SunIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <SunIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -259,10 +288,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <BookOpenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <BookOpenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                         </div>
@@ -273,10 +302,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -285,10 +314,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="col-span-2" />
@@ -300,10 +329,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <WifiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <WifiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -312,10 +341,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <ComputerDesktopIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <ComputerDesktopIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -324,10 +353,10 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                         defaultValue=''
                                     />
-                                    <ArrowDownTrayIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                                    <ArrowDownTrayIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
                                 </div>
                             </div>
                         </div>
@@ -338,7 +367,7 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                     ></textarea>
                                 </div>
                             </div>
@@ -350,7 +379,7 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                     ></textarea>
                                 </div>
                             </div>
@@ -362,7 +391,7 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                     ></textarea>
                                 </div>
                             </div>
@@ -374,7 +403,7 @@ export default function ReviewApplication({
                                 </label>
                                 <div className="relative">
                                     <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                     ></textarea>
                                 </div>
                             </div>
@@ -382,17 +411,16 @@ export default function ReviewApplication({
                     </div>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={2}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
-                        <Calendar />
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
+                        <Calendar name={info.Nombre} phone={info.Celular} />
                     </div>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={3}>
-                    <div className="rounded-md bg-gray-50 p-4 md:p-6">
-
+                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
+                        <AttemptsTab attempts={attempts} handleAttemptChange={handleAttemptChange} />
                     </div>
                 </CustomTabPanel>
             </Box >
-            <EditApplicationForm id={data[0].id} />
         </div>
     );
 }
