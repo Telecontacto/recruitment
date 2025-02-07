@@ -12,6 +12,15 @@ importers:
 
   .:
     dependencies:
+      '@coreui/icons':
+        specifier: ^3.0.1
+        version: 3.0.1
+      '@coreui/icons-react':
+        specifier: ^2.3.0
+        version: 2.3.0(react-dom@19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013))(react@19.0.0-rc-cd22717c-20241013)
+      '@coreui/react':
+        specifier: ^5.5.0
+        version: 5.5.0(react-dom@19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013))(react@19.0.0-rc-cd22717c-20241013)
       '@emotion/cache':
         specifier: ^11.14.0
         version: 11.14.0
@@ -57,6 +66,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      lucide-react:
+        specifier: ^0.474.0
+        version: 0.474.0(react@19.0.0-rc-cd22717c-20241013)
       mssql:
         specifier: ^11.0.1
         version: 11.0.1
@@ -240,6 +252,26 @@ packages:
   '@babel/types@7.26.3':
     resolution: {integrity: sha512-vN5p+1kl59GVKMvTHt55NzzmYVxprfJD+ql7U9NFIfKCBkYE55LYtS+WtPlaYOyzydrKI8Nezd+aZextrd+FMA==}
     engines: {node: '>=6.9.0'}
+
+  '@coreui/coreui@5.2.0':
+    resolution: {integrity: sha512-DZLWzPIZP3KTNgcaRXny/7lcQm0rDMrheu3VsWpgbln5rUuJwxdopwhTSnOryVyCwjlDbs3Z8ZfIzOeBXNC4GA==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.8
+
+  '@coreui/icons-react@2.3.0':
+    resolution: {integrity: sha512-s4jjCrtHnqnu30GLcfDbtWxEaB7imBQ5E6w89JzP5Jd6EV6o38tR0RNix4nXRubayJKAvIjlwZWOKEFNG0NM7Q==}
+    peerDependencies:
+      react: '>=17'
+      react-dom: '>=17'
+
+  '@coreui/icons@3.0.1':
+    resolution: {integrity: sha512-u9UKEcRMyY9pa4jUoLij8pAR03g5g6TLWV33/Mx2ix8sffyi0eO4fLV8DSTQljDCw938zt7KYog5cVKEAJUxxg==}
+
+  '@coreui/react@5.5.0':
+    resolution: {integrity: sha512-7bYbrA4y/glmSelvoLgJeHKDbAAXh5GFFSeD7V/6AcSSSzefnE6Ry5zXbyyBZzFisOraFHN8X8b0J5tAuyeWOg==}
+    peerDependencies:
+      react: '>=17'
+      react-dom: '>=17'
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -1736,6 +1768,11 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
+  lucide-react@0.474.0:
+    resolution: {integrity: sha512-CmghgHkh0OJNmxGKWc0qfPJCYHASPMVSyGY8fj3xgk4v84ItqDg64JNKFZn5hC6E0vHi6gxnbCgwhyVB09wQtA==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
@@ -2818,6 +2855,25 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
+
+  '@coreui/coreui@5.2.0(@popperjs/core@2.11.8)':
+    dependencies:
+      '@popperjs/core': 2.11.8
+
+  '@coreui/icons-react@2.3.0(react-dom@19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013))(react@19.0.0-rc-cd22717c-20241013)':
+    dependencies:
+      react: 19.0.0-rc-cd22717c-20241013
+      react-dom: 19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013)
+
+  '@coreui/icons@3.0.1': {}
+
+  '@coreui/react@5.5.0(react-dom@19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013))(react@19.0.0-rc-cd22717c-20241013)':
+    dependencies:
+      '@coreui/coreui': 5.2.0(@popperjs/core@2.11.8)
+      '@popperjs/core': 2.11.8
+      prop-types: 15.8.1
+      react: 19.0.0-rc-cd22717c-20241013
+      react-dom: 19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013)
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -4338,6 +4394,10 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  lucide-react@0.474.0(react@19.0.0-rc-cd22717c-20241013):
+    dependencies:
+      react: 19.0.0-rc-cd22717c-20241013
 
   make-dir@3.1.0:
     dependencies:

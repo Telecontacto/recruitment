@@ -124,23 +124,23 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={handlePrevMonth}
-                    className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                    className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
                 >
                     &larr;
                 </button>
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-2xl font-bold dark:text-gray-200">
                     {monthNames[currentMonth]} {currentYear}
                 </h1>
                 <button
                     onClick={handleNextMonth}
-                    className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                    className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
                 >
                     &rarr;
                 </button>
             </div>
             <div className="grid grid-cols-7 gap-2">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="p-2 font-semibold text-gray-700">
+                    <div key={day} className="p-2 font-semibold text-gray-700 dark:text-gray-300">
                         {day}
                     </div>
                 ))}
@@ -150,7 +150,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
                 {Array.from({ length: daysInMonth }, (_, index) => (
                     <div
                         key={index + 1}
-                        className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}` ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+                        className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}` ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'}`}
                         onClick={() => handleDayClick(index + 1)}
                     >
                         {index + 1}
@@ -159,10 +159,10 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
             </div>
 
             {selectedDate && (
-                <div className="mt-6 p-4 border rounded-lg bg-white shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Appointments for {selectedDate}</h2>
+                <div className="mt-6 p-4 border rounded-lg bg-white shadow-md dark:bg-gray-800 dark:border-gray-700">
+                    <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Appointments for {selectedDate}</h2>
                     <div className="mt-4">
-                        <h3 className="text-lg font-semibold mb-2">Available Time Slots</h3>
+                        <h3 className="text-lg font-semibold mb-2 dark:text-gray-300">Available Time Slots</h3>
                         <ul className="list-none">
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
@@ -170,7 +170,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
                                 return (
                                     <li
                                         key={index}
-                                        className={`p-2 border rounded-lg mb-1 cursor-pointer ${isFull ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+                                        className={`p-2 border rounded-lg mb-1 cursor-pointer ${isFull ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'}`}
                                     >
                                         <div onClick={() => toggleTimeSlot(time)}>{new Date('1970-01-01T' + time + 'Z')
                                             .toLocaleTimeString('en-US',
@@ -207,7 +207,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
 
             {showAddEventModal && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                    <div className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-200">
                         <h2 className="text-xl font-semibold mb-4">Set Appointment</h2>
                         <p className="mb-4">Are you sure you want to set the appointment to {selectedDate} at {newEventTime}?</p>
                         <div className="flex justify-end space-x-4">

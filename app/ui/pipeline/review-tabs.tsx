@@ -69,9 +69,9 @@ function a11yProps(index: number) {
 const ScheduleInputs: React.FC<ScheduleInputsProps> = ({ day, from, to }) => {
     return (
         <div key={day} className='mb-4'>
-            <label className='mb-2 block text-sm font-medium'>{day}</label>
-            Desde: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500" name={`${day}From`} id={`${day}From`} defaultValue={from} />
-            Hasta: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500" name={`${day}To`} id={`${day}To`} defaultValue={to} />
+            <label className='mb-2 block text-sm font-medium dark:text-gray-300'>{day}</label>
+            Desde: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" name={`${day}From`} id={`${day}From`} defaultValue={from} />
+            Hasta: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" name={`${day}To`} id={`${day}To`} defaultValue={to} />
         </div>
     );
 };
@@ -82,8 +82,14 @@ export default function ReviewApplication({
     data: any;
 }) {
     const [info, setInfo] = useState(data[0]);
+    // Add new state for qualification
+    const [qualification, setQualification] = useState({
+        qualifies: '',
+        reason: ''
+    });
     const [value, setValue] = useState(0);
-    const [attempts, setAttempts] = useState([{ contacted: '', notes: '' }]);
+    // Initialize attempts from info.attempts if it exists, otherwise create empty array
+    const [attempts, setAttempts] = useState(info.attempts || [{ contacted: '', notes: '' }]);
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error('ThemeContext must be used within a ThemeProvider');
@@ -108,17 +114,25 @@ export default function ReviewApplication({
     }, [isDarkMode]);
 
     function handleAttemptChange(index: number, field: string, value: string): void {
-        setInfo((prevInfo: any) => {
-            const updatedAttempts = [...prevInfo.attempts];
-            updatedAttempts[index] = {
-                ...updatedAttempts[index],
-                [field]: value,
-            };
-            return {
-                ...prevInfo,
-                attempts: updatedAttempts,
-            };
-        });
+        const updatedAttempts = [...attempts]; // Use local attempts state instead of info.attempts
+        updatedAttempts[index] = {
+            ...updatedAttempts[index],
+            [field]: value,
+        };
+        setAttempts(updatedAttempts); // Update attempts state
+
+        // Also update info state if needed
+        setInfo((prevInfo: any) => ({
+            ...prevInfo,
+            attempts: updatedAttempts,
+        }));
+    }
+
+    function handleQualificationChange(field: string, value: string): void {
+        setQualification(prev => ({
+            ...prev,
+            [field]: value
+        }));
     }
 
     return (
@@ -136,7 +150,7 @@ export default function ReviewApplication({
                     <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
                         <div className='grid grid-cols-3 gap-2'>
                             <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
+                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
                                     Name
                                 </label>
                                 <div className="relative">
@@ -148,7 +162,7 @@ export default function ReviewApplication({
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
+                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
                                     Phone Number
                                 </label>
                                 <div className="relative">
@@ -160,7 +174,7 @@ export default function ReviewApplication({
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
+                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
                                     Email
                                 </label>
                                 <div className="relative">
@@ -173,7 +187,7 @@ export default function ReviewApplication({
                             </div>
                         </div>
                         <fieldset>
-                            <legend className="mb-2 block text-lg font-medium">
+                            <legend className="mb-2 block text-lg font-medium dark:text-gray-200">
                                 Week Schedule Availability
                             </legend>
                             <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3 dark:bg-gray-700 dark:border-gray-600">
@@ -417,7 +431,12 @@ export default function ReviewApplication({
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={3}>
                     <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                        <AttemptsTab attempts={attempts} handleAttemptChange={handleAttemptChange} />
+                        <AttemptsTab
+                            attempts={attempts}
+                            handleAttemptChange={handleAttemptChange}
+                        /* qualification={qualification} 
+                        handleQualificationChange={handleQualificationChange} */
+                        />
                     </div>
                 </CustomTabPanel>
             </Box >

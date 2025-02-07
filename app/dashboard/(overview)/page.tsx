@@ -1,10 +1,11 @@
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+/* import RevenueChart from '@/app/ui/dashboard/revenue-chart';
+import LatestInvoices from '@/app/ui/dashboard/latest-invoices'; */
 import CardWrapper from '@/app/ui/dashboard/cards';
 import { montserrat } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
+import DateSelector from '@/app/ui/dashboard/date-selector';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -12,23 +13,26 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   return (
-    <main>
-      <h1 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>
+    <main className={`${montserrat.className}`}>
+      <h1 className="mb-4 text-xl md:text-2xl">
         Dashboard
       </h1>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 bg-gray-200 p-4 rounded-md">
+      {/* <DateSelector onDateChange={(date) => {
+        // This will be handled by the client component
+      }} /> */}
+      <div className="bg-gray-200 p-4 rounded-md">
         <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
+          <CardWrapper date="2025-01" />
         </Suspense>
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+      {/* <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />
         </Suspense>
         <Suspense fallback={<LatestInvoicesSkeleton />}>
           <LatestInvoices />
         </Suspense>
-      </div>
+      </div> */}
     </main>
   );
 }

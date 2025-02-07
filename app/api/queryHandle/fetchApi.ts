@@ -99,3 +99,24 @@ export const insertCalendarAppointment = async (
     throw error;
   }
 };
+
+export async function fetchCardData(date: string): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+    ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+    : '';
+    const response = await fetch(`${baseUrl}/api/cards?startDate=${date}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+}
