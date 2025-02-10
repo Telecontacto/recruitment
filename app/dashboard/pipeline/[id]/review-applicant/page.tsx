@@ -1,6 +1,5 @@
 import Form from '@/app/ui/pipeline/edit-form';
 import Breadcrumbs from '@/app/ui/pipeline/breadcrumbs';
-import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { fetchApplicant } from '@/app/api/queryHandle/fetchApi'
 import { montserrat } from '@/app/ui/fonts';
