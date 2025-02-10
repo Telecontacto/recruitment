@@ -1,5 +1,8 @@
 'use client';
- 
+
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { authenticate } from '@/app/lib/actions';
 import { montserrat } from '@/app/ui/fonts';
 import {
   AtSymbolIcon,
@@ -8,18 +11,13 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
 import Image from 'next/image';
- 
+
 export default function LoginForm() {
-  const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
-    undefined,
-  );
- 
+  const [errorMessage, dispatch] = useActionState(authenticate, undefined);
+
   return (
-    <form action={formAction} className="space-y-3">
+    <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-200 text-black px-6 pb-4 pt-8">
         <div className="w-full">
           <div>
@@ -43,14 +41,14 @@ export default function LoginForm() {
           </div>
           <div className="mt-4">
             <label
-              className={`${montserrat.className}mb-3 mt-5 block text-xs font-medium text-gray-900`}
+              className={`${montserrat.className} mb-3 mt-5 block text-xs font-medium text-gray-900`}
               htmlFor="password"
             >
               Password
             </label>
             <div className="relative">
               <input
-                className={`${montserrat.className}peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
+                className={`${montserrat.className} peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
                 id="password"
                 type="password"
                 name="password"
@@ -62,9 +60,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className={`${montserrat.className} mt-4 w-full bg-red-500`} aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-black hover:bg-white hover:text-black" />
-        </Button>
+        <LoginButton />
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
@@ -79,13 +75,23 @@ export default function LoginForm() {
         </div>
         <div className='flex p-6'>
           <Image
-          src="/godaddy.gif"
-          width={500}
-          height={560}
-          alt="Telecontacto Logo"
-          /> 
+            src="/godaddy.gif"
+            width={500}
+            height={560}
+            alt="Telecontacto Logo"
+          />
         </div>
       </div>
     </form>
+  );
+}
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className={`${montserrat.className} mt-4 w-full bg-red-500`} aria-disabled={pending}>
+      {pending ? 'Logging in...' : 'Log in'} <ArrowRightIcon className="ml-auto h-5 w-5 text-black hover:bg-white hover:text-black" />
+    </Button>
   );
 }

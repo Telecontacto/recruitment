@@ -66,6 +66,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      js-sha256:
+        specifier: ^0.11.0
+        version: 0.11.0
       lucide-react:
         specifier: ^0.474.0
         version: 0.474.0(react@19.0.0-rc-cd22717c-20241013)
@@ -96,6 +99,9 @@ importers:
       react-switch:
         specifier: ^7.0.0
         version: 7.0.0(react-dom@19.0.0-rc-cd22717c-20241013(react@19.0.0-rc-cd22717c-20241013))(react@19.0.0-rc-cd22717c-20241013)
+      server.js:
+        specifier: ^1.0.0
+        version: 1.0.0
       tailwindcss:
         specifier: 3.4.4
         version: 3.4.4(ts-node@10.9.1(@types/node@20.14.8)(typescript@5.5.2))
@@ -1682,6 +1688,9 @@ packages:
   js-md4@0.3.2:
     resolution: {integrity: sha512-/GDnfQYsltsjRswQhN9fhv3EMw2sCpUdrdxyWDOUK7eyD++r3gRhzgiQgc/x4MAv2i1iuQ4lxO5mvqM3vj4bwA==}
 
+  js-sha256@0.11.0:
+    resolution: {integrity: sha512-6xNlKayMZvds9h1Y1VWc0fQHQ82BxTXizWPEtEeGvmOUYpBRy4gbWroHLpzowe6xiQhHpelCQiE7HEdznyBL9Q==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -2304,6 +2313,9 @@ packages:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
     hasBin: true
+
+  server.js@1.0.0:
+    resolution: {integrity: sha512-fO4IvzkZ09bBB++XU/gWGuzxJs0OpghSd/34mlW8coMoakLzj/+W5d1pHX+I+7H52GkBKu96UQU0K5vptNjaqg==}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -4304,6 +4316,8 @@ snapshots:
 
   js-md4@0.3.2: {}
 
+  js-sha256@0.11.0: {}
+
   js-tokens@4.0.0: {}
 
   jsesc@3.1.0: {}
@@ -4850,6 +4864,8 @@ snapshots:
   semver@7.6.2: {}
 
   semver@7.6.3: {}
+
+  server.js@1.0.0: {}
 
   set-blocking@2.0.0: {}
 

@@ -1,21 +1,19 @@
+'use client';
+
 import { PowerIcon } from '@heroicons/react/24/outline';
-import { signOut } from '@/auth';
+import { signOut } from 'next-auth/react';
 import React from 'react';
 
 export default function SignOutForm() {
     const handleSignOut = async () => {
         try {
-            const response = await fetch('/api/signout', {
-                method: 'POST',
+            await signOut({
+                callbackUrl: '/login',
+                redirect: true,
             });
-            if (response.ok) {
-                // Handle successful sign out, e.g., redirect to login page
-                window.location.href = '/login';
-            } else {
-                console.error('Failed to sign out');
-            }
         } catch (error) {
             console.error('Error signing out:', error);
+            window.location.href = '/login';
         }
     };
 

@@ -120,3 +120,39 @@ export async function fetchCardData(date: string): Promise<any> {
     throw error;
   }
 }
+
+export async function fetchUserAuthentication(formData: FormData): Promise<any> {
+  try {
+    const email = formData.get('email')?.toString() || '';
+    const password = formData.get('password')?.toString() || '';
+
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/auth?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+}
+
+export function signOut(): void {
+  try {
+        // Handle successful sign out, e.g., redirect to login page
+        window.location.href = '/login';
+     
+  } catch (error) {
+    console.error('Error signing out:', error);
+    throw error;
+  }
+}
