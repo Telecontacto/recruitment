@@ -6,7 +6,7 @@ import { getConnection } from '@/app/lib/db';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import { sha256 } from 'js-sha256';
- 
+
 async function getUser(email: string): Promise<User | undefined> {
   try {
     console.log('Attempting to fetch user with email:', email);
@@ -38,7 +38,7 @@ async function getUser(email: string): Promise<User | undefined> {
     }
   }
 }
- 
+
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   providers: [
@@ -51,16 +51,16 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             password: z.string().min(6) 
           })
           .safeParse(credentials);
- 
+
         if (!parsedCredentials.success) {
           console.log('Credential validation failed:', parsedCredentials.error.errors);
           return null;
         }
 
         try {
-            const { email, password } = parsedCredentials.data;
+          const { email, password } = parsedCredentials.data;
           console.log('Fetching user for email:', email);
-            const user = await getUser(email);
+          const user = await getUser(email);
 
           if (!user) {
             console.log('No user found with email:', email);
@@ -86,7 +86,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             console.log('Password mismatch for user:', email);
             return null;
           }
-   
+
           console.log('Authentication successful, returning user data');
           return {
             id: user.id.toString(),
@@ -138,7 +138,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
-      },
     },
+  },
   debug: true, // Enable debug messages
 });
