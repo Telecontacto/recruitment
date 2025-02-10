@@ -1,7 +1,7 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
-import { fetchLatestInvoices } from '@/app/lib/data';
+/* import { fetchLatestInvoices } from '@/app/lib/data';
 
 export default async function LatestInvoices() { // Remove props
   const LatestInvoices = await fetchLatestInvoices();
@@ -11,8 +11,6 @@ export default async function LatestInvoices() { // Remove props
         Latest Invoices
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-200 p-4">
-        {/* NOTE: Uncomment this code in Chapter 7 */}
-
         {<div className="bg-white dark:bg-gray-800 px-6">
           {LatestInvoices.map((invoice, i) => {
             return (
@@ -59,3 +57,4 @@ export default async function LatestInvoices() { // Remove props
     </div>
   );
 }
+ */
