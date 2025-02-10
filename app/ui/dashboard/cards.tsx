@@ -23,15 +23,15 @@ export default async function CardWrapper({ date }: { date: string }) {
   return (
     <>
       <div className="bg-gray-200 p-4 rounded-md">
-        <h1 className="text-2xl font-semibold text-gray-800">Total Applications Received</h1>
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">Total Applications Received</h1>
       </div>
-      <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-6 bg-gray-200 p-4 rounded-md">
+      <div className="grid gap-6 sm:grid-cols-5 lg:grid-cols-4 bg-gray-200 p-4 rounded-md">
         {resultsWithTotal.map((source: { fuente: string; total: number }) => (
           <Card
             key={source.fuente}
             title={source.fuente}
             value={source.total}
-            type={source.fuente as 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'Total'}
+            type={source.fuente as 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'Total' | 'Total' | 'Total'}
           />
         ))}
       </div>
