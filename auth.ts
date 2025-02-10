@@ -7,7 +7,19 @@ import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import { sha256 } from 'js-sha256';
 
-async function getUser(email: string): Promise<User | undefined> {
+// Define custom types
+type UserWithRole = User & {
+  role: string;
+};
+
+declare module 'next-auth' {
+  interface User extends UserWithRole {}
+  interface Session {
+    user: UserWithRole;
+  }
+}
+
+async function getUser(email: string): Promise<UserWithRole | undefined> {
   try {
     console.log('Attempting to fetch user with email:', email);
     const pool = await getConnection();
@@ -92,6 +104,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             id: user.id.toString(),
             name: user.name,
             email: user.email,
+            password: user.password,
             role: user.role,
           };
           
@@ -114,31 +127,23 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       },
     }),
   ],
-  // Add CSRF configuration
-  secret: process.env.AUTH_SECRET,
-  session: {
-    strategy: 'jwt',
-  },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
-      }
-      return token;
-    },
     async session({ session, token }) {
-      if (token.user) {
-        session.user = token.user;
+      if (token && session.user) {
+        session.user.id = token.sub as string;
+        session.user.role = token.role as string;
       }
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      // Allows relative URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
-    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.sub = user.id;
+        token.role = user.role;
+      }
+      return token;
+    }
   },
-  debug: true, // Enable debug messages
+  pages: {
+    signIn: '/login',
+  }
 });

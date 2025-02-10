@@ -9,18 +9,12 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    const email = formData.get('email');
-    const password = formData.get('password');
-    
     await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
+      email: formData.get('email'),
+      password: formData.get('password'),
+      redirectTo: '/dashboard',
+      redirect: true,
     });
-
-    // If we get here, sign-in was successful
-    redirect('/dashboard');
-    
   } catch (error) {
     if (error instanceof AuthError) {
       return 'Invalid credentials.';
