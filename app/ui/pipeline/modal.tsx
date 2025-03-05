@@ -122,7 +122,7 @@ export function HireRejectedModal({ isOpen, onClose, validateAnswer }: HRModalPr
                         <div className="bg-gray-200 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <button
                                 type="button"
-                                onClick={() => validateAnswer("Hired")}
+                                onClick={() => validateAnswer("5")}
                                 className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-black sm:ml-3 sm:w-auto"
                             >
                                 Hired
@@ -130,7 +130,7 @@ export function HireRejectedModal({ isOpen, onClose, validateAnswer }: HRModalPr
                             <button
                                 type="button"
                                 data-autofocus
-                                onClick={() => validateAnswer("Rejected")}
+                                onClick={() => validateAnswer("0")}
                                 className="mt-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold bg-red-600 text-white hover:bg-red-200 hover:text-black sm:mt-0 sm:w-auto"
                             >
                                 Rejected

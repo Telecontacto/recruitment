@@ -32,6 +32,8 @@ export const fetchApplicant = async (
     ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
     : '';
 
+    //console.log(`${baseUrl}${endpoint}?id=${encodeURIComponent(value)}`);
+
     const response = await fetch(`${baseUrl}${endpoint}?id=${encodeURIComponent(value)}`, {
       method: 'GET',
     });
@@ -77,14 +79,15 @@ export const insertCalendarAppointment = async (
   name: string,
   phone: string,
   date: string,
-  time: string
+  time: string,
+  id: number
 ): Promise<any> => {
   try {
     const baseUrl = typeof window === 'undefined' 
     ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
     : '';
 
-    const response = await fetch(`${baseUrl}/api/calendarAppointments/insert?name=${name}&phone=${phone}&date=${date}&time=${time}`, {
+    const response = await fetch(`${baseUrl}/api/calendarAppointments/insert?name=${name}&phone=${phone}&date=${date}&time=${time}&id=${id}`, {
       method: 'POST',
     });
 
@@ -142,6 +145,242 @@ export async function fetchUserAuthentication(formData: FormData): Promise<any> 
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
+    throw error;
+  }
+}
+
+export async function fetchAttempts(phone: string): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/attempts?phone=${encodeURIComponent(phone)}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error fetching attempts: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching attempts:', error);
+    throw error;
+  }
+}
+
+export async function updateAttempts(
+  attemptNumber: number, 
+  status: string, 
+  notes: string,
+  id: number
+): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/attempts/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        attemptNumber,
+        status,
+        notes,
+        id
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating attempts: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating attempts:', error);
+    throw error;
+  }
+}
+
+export async function updateQualification(
+  status: string,
+  reason: string,
+  id: number
+): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/qualification/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status,
+        reason,
+        id
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating qualification: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating qualification:', error);
+    throw error;
+  }
+}
+
+export async function updatePersonalInfo(solicitorId: string, data: any) {
+    console.log('Starting updatePersonalInfo:', { solicitorId, data });
+    try {
+        const baseUrl = typeof window === 'undefined' 
+            ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+            : '';
+        
+        const url = `${baseUrl}/api/applicants/${solicitorId}/personal-info`;
+        console.log('Making request to:', url);
+
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            console.error('Request failed:', {
+                status: response.status,
+                statusText: response.statusText
+            });
+            throw new Error('Failed to update personal info');
+        }
+
+        const result = await response.json();
+        console.log('Request successful:', result);
+        return result;
+    } catch (error) {
+        console.error('Error in updatePersonalInfo:', error);
+        throw error;
+    }
+}
+
+export async function updateQuestions(solicitorId: string, data: any) {
+    console.log('Starting updateQuestions:', { solicitorId, data });
+    try {
+        const url = `/api/applicants/${solicitorId}/questions`;
+        console.log('Making request to:', url);
+        
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            console.error('Request failed:', {
+                status: response.status,
+                statusText: response.statusText
+            });
+            throw new Error('Failed to update questions');
+        }
+
+        const result = await response.json();
+        console.log('Request successful:', result);
+        return result;
+    } catch (error) {
+        console.error('Error in updateQuestions:', error);
+        throw error;
+    }
+}
+
+export async function updateInterviewQuestions(solicitorId: string, route: any, data: any) {
+  console.log(`Starting update${route}Questions:`, { solicitorId, data });
+  try {
+      const url = `/api/applicants/${solicitorId}/onsite-question/${route}`;
+      console.log('Making request to:', url);
+      
+      const response = await fetch(url, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+      });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+          console.error('Request failed:', {
+              status: response.status,
+              statusText: response.statusText
+          });
+          throw new Error('Failed to update questions');
+      }
+
+      const result = await response.json();
+      console.log('Request successful:', result);
+      return result;
+  } catch (error) {
+      console.error('Error in updateInterviewQuestions:', error);
+      throw error;
+  }
+}
+
+export async function assignRecruiter(applicantId: number, recruiter: string): Promise<any> {
+  console.log('Starting assignRecruiter:', { applicantId, recruiter });
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+    
+    const url = `${baseUrl}/api/assignRecruiter`;
+    console.log('Making request to:', url);
+          
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        applicantId,
+        recruiter,
+      }),
+    });
+
+    console.log('Response status:', response.status);
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Request failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        data
+      });
+      throw new Error(data.error || `Error assigning recruiter: ${response.status}`);
+    }
+
+    console.log('Request successful:', data);
+    return data;
+  } catch (error) {
+    console.error('Error in assignRecruiter:', error);
     throw error;
   }
 }

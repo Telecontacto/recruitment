@@ -11,12 +11,14 @@ import { PipelineSkeleton } from '@/app/ui/skeletons';
 
 export function Pipeline({
     title,
+    stageNumber, // Add this new prop
     res,
     step,
     onDragStart,
     onDrop,
 }: {
     title: string;
+    stageNumber: string; // Add this type
     step: string;
     res: Array<{
         id: number;
@@ -32,7 +34,7 @@ export function Pipeline({
             <div
                 className="stage overflow-y-auto bg-white dark:bg-gray-800"
                 onDragOver={(e) => e.preventDefault()} // Allow drop
-                onDrop={() => onDrop(title)} // Handle drop
+                onDrop={() => onDrop(stageNumber)} // Use stageNumber instead of title
             >
                 <h2 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>{title}</h2>
                 <div className="applications">
@@ -41,10 +43,12 @@ export function Pipeline({
                             key={item.id}
                             draggable="true"
                             className={clsx(
-                                `applicant bg-gray-50 dark:bg-gray-600 ${montserrat.className}`,
+                                'applicant',
+                                'bg-gray-50',
                                 {
-                                    "applicant-hired": item.statussolicitud === "Hired",
-                                    "applicant-rejected": item.statussolicitud === "Rejected",
+                                    'dark:bg-gray-600': item.statussolicitud !== '0' && item.statussolicitud !== '5',
+                                    'applicant-hired': item.statussolicitud === '5',
+                                    'applicant-rejected': item.statussolicitud === '0',
                                 }
                             )}
                             onDragStart={() => onDragStart(item)} // Start dragging
@@ -86,6 +90,8 @@ export function Pipelines({
     const [isModalOpen, setModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isHRModalOpen, setHRModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredResults, setFilteredResults] = useState(results);
     const closeDeleteModal = () => setModalOpen(false);
     const closeHRModal = () => setModalOpen(false);
     const [stages, setStages] = useState<Stages>({
@@ -100,10 +106,23 @@ export function Pipelines({
     const [ModalMessage, setModalMessage] = useState('')
     const [ModalColor, setModalColor] = useState('')
 
+    const [data, setData] = useState(results);
+
+    console.log('results:', results);
+
     useEffect(() => {
-        if (results)
-            loadData(results)
-    }, [results]);
+        if (results) {
+            const filtered = results.filter((item: any) =>
+                item.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            setFilteredResults(filtered);
+            loadData(filtered);
+        }
+    }, [results, searchTerm]);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    };
 
     const handleDragStart = (item: any) => {
         setDraggedItem(item);
@@ -114,7 +133,7 @@ export function Pipelines({
         if (draggedItem) {
             if (draggedItem.statussolicitud !== stage) {
                 // Update backend
-                if (stage === "Hired/Rejected") {
+                if (stage === "5") { // Changed from "Hired/Rejected" to "5"
                     setHRModalOpen(true)
                 } else {
                     fetch(`/api/update?stage=${stage}&ID=${draggedItem.id}`, {
@@ -163,21 +182,21 @@ export function Pipelines({
         };
 
         data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string; }) => {
-            switch (item.statussolicitud.toLowerCase()) {
-                case "received":
+            switch (item.statussolicitud) {
+                case "1":
                     updatedStages.Received.push(item);
                     break;
-                case "in review":
+                case "2":
                     updatedStages["In Review"].push(item);
                     break;
-                case "interview":
+                case "3":
                     updatedStages.Interview.push(item);
                     break;
-                case "offered":
+                case "4":
                     updatedStages.Offered.push(item);
                     break;
-                case "hired":
-                case "rejected":
+                case "5":
+                case "0":
                     updatedStages["Hired/Rejected"].push(item);
                     break;
                 default:
@@ -261,20 +280,20 @@ export function Pipelines({
 
             newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string; }) => {
                 switch (item.statussolicitud.toLowerCase()) {
-                    case "received":
+                    case "1":
                         updatedStages.Received.push(item);
                         break;
-                    case "in review":
+                    case "2":
                         updatedStages["In Review"].push(item);
                         break;
-                    case "interview":
+                    case "3":
                         updatedStages.Interview.push(item);
                         break;
-                    case "offered":
+                    case "4":
                         updatedStages.Offered.push(item);
                         break;
-                    case "hired":
-                    case "rejected":
+                    case "5":
+                    case "0":
                         updatedStages["Hired/Rejected"].push(item);
                         break;
                     default:
@@ -301,6 +320,22 @@ export function Pipelines({
 
     return (
         <>
+            <div className="mb-4 flex items-center gap-2 justify-center">
+                <label htmlFor="search" className="block text-sm font-medium text-lg">
+                    Search by name
+                </label>
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder='Search...'
+                        id='search'
+                        name='search'
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        className="rounded-md border border-gray-300 p-2 pl-10 bg-white text-black dark:bg-gray-800 dark:text-white"
+                    />
+                </div>
+            </div>
             <div className="stages text-center bg-gray-200">
                 <div
                     className="trash-icon h-10 w-10 text-red-500"
@@ -311,6 +346,7 @@ export function Pipelines({
                 </div>
                 <Pipeline
                     title="Received"
+                    stageNumber="1"
                     res={stages.Received}
                     step="view-applicant"
                     onDragStart={handleDragStart}
@@ -318,6 +354,7 @@ export function Pipelines({
                 />
                 <Pipeline
                     title="In Review"
+                    stageNumber="2"
                     res={stages["In Review"]}
                     step="review-applicant"
                     onDragStart={handleDragStart}
@@ -325,13 +362,15 @@ export function Pipelines({
                 />
                 <Pipeline
                     title="Interview"
+                    stageNumber="3"
                     res={stages.Interview}
-                    step="view_empleo"
+                    step="interview-applicant"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                 />
                 <Pipeline
                     title="Offered"
+                    stageNumber="4"
                     res={stages.Offered}
                     step="view_empleo"
                     onDragStart={handleDragStart}
@@ -339,6 +378,7 @@ export function Pipelines({
                 />
                 <Pipeline
                     title="Hired/Rejected"
+                    stageNumber="5"
                     res={stages["Hired/Rejected"]}
                     step="view_empleo"
                     onDragStart={handleDragStart}

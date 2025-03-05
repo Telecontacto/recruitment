@@ -1,31 +1,24 @@
-import Form from '@/app/ui/pipeline/edit-form';
-import Breadcrumbs from '@/app/ui/pipeline/breadcrumbs';
-import { notFound } from 'next/navigation';
-import { fetchApplicant } from '@/app/api/queryHandle/fetchApi'
-import { montserrat } from '@/app/ui/fonts';
-import ViewApplication from '@/app/ui/pipeline/review-tabs'
+import { fetchApplicant } from '@/app/api/queryHandle/fetchApi';
+import ViewApplicantWrapper from '@/app/ui/pipeline/review-applicant-wrapper';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Review Applicant',
 };
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
-  const id = params.id;
-  const applicantData = await fetchApplicant(id, '/api/editPipeline');
-
-  const applicant = applicantData[0].Nombre
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  const applicantData = await fetchApplicant(id, '/api/reviewPipeline');
+  const applicant = applicantData[0] ? applicantData[0].name : 'Applicant';
+  const stageNumber = applicantData[0] ? parseInt(applicantData[0].Status) : 0;
 
   return (
-    <main className={montserrat.className}>
-      <Breadcrumbs
-        breadcrumbs={[
-          { label: 'Pipelines', href: '/dashboard/pipeline' },
-          { label: `${applicant}`, href: `/dashboard/pipeline/${id}/view-applicant`, active: true },
-        ]}
-      />
-      <ViewApplication data={applicantData} />
-    </main>
+    <ViewApplicantWrapper
+      applicant={applicant}
+      id={id}
+      stageNumber={stageNumber}
+      applicantData={applicantData}
+    />
   );
 }

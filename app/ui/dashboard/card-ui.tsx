@@ -1,6 +1,6 @@
 'use client';
 
-import { GlobeAltIcon, HashtagIcon } from '@heroicons/react/24/outline';
+import { GlobeAltIcon, HashtagIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import CIcon from '@coreui/icons-react';
 import {
     cibFacebook,
@@ -15,6 +15,8 @@ const sourceIconMap: { [key: string]: any } = {
     'Instagram': () => <CIcon icon={cibInstagram} className="h-5 w-5 text-gray-700 dark:text-white" />,
     'LinkedIn': () => <CIcon icon={cibLinkedin} className="h-5 w-5 text-gray-700 dark:text-white" />,
     'Indeed': () => <CIcon icon={cibIndeed} className="h-5 w-5 text-gray-700 dark:text-white" />,
+    'Zip': UserCircleIcon,
+    'Perfil': UserCircleIcon,
     'Web': GlobeAltIcon,
     'Total': HashtagIcon,
 };
@@ -26,7 +28,7 @@ export function Card({
 }: {
     title: string;
     value: number | string;
-    type: 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'Total';
+    type: 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Total';
 }) {
     const IconComponent = sourceIconMap[type] || GlobeAltIcon;
 
@@ -40,9 +42,9 @@ export function Card({
                 <h3 className="ml-2 text-sm font-medium">{title}</h3>
             </div>
             <p className={`${montserrat.className}
-        truncate rounded-xl bg-white dark:bg-gray-800 px-4 py-8 text-center text-2xl`}
+                truncate rounded-xl bg-white dark:bg-gray-800 px-4 py-8 text-center text-2xl`}
             >
-                {value}
+                {value === 0 ? '-' : value}
             </p>
         </div>
     );

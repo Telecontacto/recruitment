@@ -7,26 +7,11 @@ import Box from '@mui/material/Box';
 import Calendar from '@/app/ui/pipeline/calendar';
 import { Metadata } from 'next';
 import { ThemeContext } from '@/app/context/ThemeContext'; // Import ThemeContext
-import {
-    HomeIcon,
-    ClockIcon,
-    EnvelopeIcon,
-    UserCircleIcon,
-    PhoneIcon,
-    BriefcaseIcon,
-    CurrencyDollarIcon,
-    KeyIcon,
-    PaperAirplaneIcon,
-    BuildingOfficeIcon,
-    AcademicCapIcon,
-    SunIcon,
-    BuildingLibraryIcon,
-    BookOpenIcon,
-    WifiIcon,
-    ArrowDownTrayIcon,
-    ComputerDesktopIcon,
-    MegaphoneIcon
-} from '@heroicons/react/24/outline';
+import { updateAttempts, updateQualification } from '@/app/api/queryHandle/fetchApi';
+import PersonalInfoPanel from './PersonalInfoPanel';
+import QuestionsPanel from './QuestionsPanel';
+import Modal from '@/app/ui/pipeline/modal';
+import { set } from 'zod';
 
 export const metadata: Metadata = {
     title: "Review Applicant",
@@ -66,35 +51,22 @@ function a11yProps(index: number) {
     };
 }
 
-const ScheduleInputs: React.FC<ScheduleInputsProps> = ({ day, from, to }) => {
-    return (
-        <div key={day} className='mb-4'>
-            <label className='mb-2 block text-sm font-medium dark:text-gray-300'>{day}</label>
-            Desde: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" name={`${day}From`} id={`${day}From`} defaultValue={from} />
-            Hasta: <input className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300" name={`${day}To`} id={`${day}To`} defaultValue={to} />
-        </div>
-    );
-};
-
 export default function ReviewApplication({
     data,
 }: {
     data: any;
 }) {
     const [info, setInfo] = useState(data[0]);
-    // Add new state for qualification
-    const [qualification, setQualification] = useState({
-        qualifies: '',
-        reason: ''
-    });
+    const [ModalMessage, setModalMessage] = useState('');
+    const [ModalColor, setModalColor] = useState('');
+    const [isModalOpen, setModalOpen] = useState(false);
     const [value, setValue] = useState(0);
-    // Initialize attempts from info.attempts if it exists, otherwise create empty array
-    const [attempts, setAttempts] = useState(info.attempts || [{ contacted: '', notes: '' }]);
+
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error('ThemeContext must be used within a ThemeProvider');
     }
-    const { isDarkMode } = themeContext; // Use ThemeContext
+    const { isDarkMode } = themeContext;
     const [tabClassName, setTabClassName] = useState('text-gray-900');
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -113,333 +85,62 @@ export default function ReviewApplication({
         setTabClassName(isDarkMode ? 'text-gray-300' : 'text-black');
     }, [isDarkMode]);
 
-    function handleAttemptChange(index: number, field: string, value: string): void {
-        const updatedAttempts = [...attempts]; // Use local attempts state instead of info.attempts
-        updatedAttempts[index] = {
-            ...updatedAttempts[index],
-            [field]: value,
-        };
-        setAttempts(updatedAttempts); // Update attempts state
-
-        // Also update info state if needed
-        setInfo((prevInfo: any) => ({
-            ...prevInfo,
-            attempts: updatedAttempts,
-        }));
-    }
-
-    function handleQualificationChange(field: string, value: string): void {
-        setQualification(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    }
+    const handleModalUpdate = (message: string) => {
+        setModalMessage(message);
+        setModalColor('bg-green-500');
+        setModalOpen(true);
+        setTimeout(() => {
+            setModalOpen(false);
+            setModalMessage('');
+            setModalColor('');
+        }, 2000);
+    };
 
     return (
-        <div className={isDarkMode ? 'dark' : ''}>
-            <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='inherit' className={tabClassName}>
-                        <Tab label="Validate Information" {...a11yProps(0)} />
-                        <Tab label="Questions" {...a11yProps(1)} />
-                        <Tab label="Schedule Interview" {...a11yProps(2)} />
-                        <Tab label="Attempts" {...a11yProps(3)} />
-                    </Tabs>
-                </Box>
-                <CustomTabPanel value={value} index={0}>
-                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                        <div className='grid grid-cols-3 gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
-                                    Name
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue={info.Nombre}
-                                    />
-                                    <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
-                                    Phone Number
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue={info.Celular}
-                                    />
-                                    <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium dark:text-gray-200">
-                                    Email
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue={info.Email}
-                                    />
-                                    <EnvelopeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
+        <>
+            <div className="dark:bg-gray-800 transition-colors duration-300 rounded-lg">
+                <Box sx={{
+                    width: '100%',
+                    '& .MuiTabs-root': {
+                        backgroundColor: 'inherit'
+                    },
+                    '& .MuiTab-root': {
+                        color: 'inherit'
+                    }
+                }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='secondary' className="dark:text-white">
+                            <Tab label="Validate Information" {...a11yProps(0)} className="dark:text-white" />
+                            <Tab label="Questions" {...a11yProps(1)} className="dark:text-white" />
+                            <Tab label="Schedule Interview" {...a11yProps(2)} className="dark:text-white" />
+                            <Tab label="Attempts" {...a11yProps(3)} className="dark:text-white" />
+                        </Tabs>
+                    </Box>
+                    <CustomTabPanel value={value} index={0}>
+                        <PersonalInfoPanel data={info} />
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={1}>
+                        <QuestionsPanel data={info} />
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={2}>
+                        <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
+                            <Calendar name={info.name} phone={info.phone} id={info.solicitorId} />
                         </div>
-                        <fieldset>
-                            <legend className="mb-2 block text-lg font-medium dark:text-gray-200">
-                                Week Schedule Availability
-                            </legend>
-                            <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3 dark:bg-gray-700 dark:border-gray-600">
-                                <div className='grid grid-cols-4 gap-2'>
-                                    <ScheduleInputs day="Monday" from={info.LunesDesde} to={info.LunesHasta} />
-                                    <ScheduleInputs day="Tuesday" from={info.MartesDesde} to={info.MartesHasta} />
-                                    <ScheduleInputs day="Wednesday" from={info.MiercolesDesde} to={info.MiercolesHasta} />
-                                    <ScheduleInputs day="Thursday" from={info.JuevesDesde} to={info.JuevesHasta} />
-                                    <ScheduleInputs day="Friday" from={info.ViernesDesde} to={info.ViernesHasta} />
-                                    <ScheduleInputs day="Saturday" from={info.SabadoDesde} to={info.SabadoHasta} />
-                                    <ScheduleInputs day="Sunday" from={info.DomingoDesde} to={info.DomingoHasta} />
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                </CustomTabPanel >
-                <CustomTabPanel value={value} index={1}>
-                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                        <div className='grid grid-cols-4 gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Salary Requested:
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Do you have Transportation?
-                                </label>
-                                <div className="relative">
-                                    <select
-                                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''>
-                                        <option value=''>Select an option</option>
-                                        <option value='Yes'>Yes</option>
-                                        <option value='No'>No</option>
-                                    </select>
-                                    <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Do you have a planned trip?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue={info.FechaViaje !== '' ? info.FechaViaje : 'No planned trips'}
-                                    />
-                                    <PaperAirplaneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Want to work onsite or remotely?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <BuildingOfficeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={3}>
+                        <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
+                            <AttemptsTab
+                                initialData={data[0]}
+                                onUpdateSuccess={handleModalUpdate}
+                            />
                         </div>
-                        <div className='grid grid-cols-4 gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Are you a student?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <AcademicCapIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Do you study onsite or remotely?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <BuildingLibraryIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Do you study during day or night?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <SunIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Are you bilingual?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <BookOpenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='grid grid-cols-4 gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Which town do you reside?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Which media did you sent the form?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <MegaphoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="col-span-2" />
-                        </div>
-                        <div className='grid grid-cols-4 gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Can you work remotely?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <WifiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Do you have a computer?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <ComputerDesktopIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    What is your internet speed?
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                        defaultValue=''
-                                    />
-                                    <ArrowDownTrayIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 dark:text-gray-400" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='grid gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    How did you hear about us?
-                                </label>
-                                <div className="relative">
-                                    <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='grid gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    What caught your attention to work in a call center?
-                                </label>
-                                <div className="relative">
-                                    <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='grid gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    What is customer service for you?
-                                </label>
-                                <div className="relative">
-                                    <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='grid gap-2'>
-                            <div className="mb-4">
-                                <label className="mb-2 block text-lg font-medium">
-                                    Comments:
-                                </label>
-                                <div className="relative">
-                                    <textarea
-                                        className="peer block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                        <Calendar name={info.Nombre} phone={info.Celular} />
-                    </div>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={3}>
-                    <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                        <AttemptsTab
-                            attempts={attempts}
-                            handleAttemptChange={handleAttemptChange}
-                        /* qualification={qualification} 
-                        handleQualificationChange={handleQualificationChange} */
-                        />
-                    </div>
-                </CustomTabPanel>
-            </Box >
-        </div>
+                    </CustomTabPanel>
+                </Box >
+            </div>
+            <Modal
+                message={ModalMessage}
+                color={ModalColor}
+                isOpen={isModalOpen} />
+        </>
     );
 }

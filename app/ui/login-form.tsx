@@ -22,14 +22,14 @@ export default function LoginForm() {
         <div className="w-full">
           <div>
             <label
-              className={`${montserrat.className} mb-3 mt-5 block text-xs font-medium text-gray-900`}
+              className={`${montserrat.className} mb-3 mt-5 block text-xs font-medium text-gray-900 dark:text-white`}
               htmlFor="email"
             >
               Email
             </label>
             <div className="relative">
               <input
-                className={`${montserrat.className} peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
+                className={`${montserrat.className} peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white`}
                 id="email"
                 type="email"
                 name="email"
@@ -41,14 +41,14 @@ export default function LoginForm() {
           </div>
           <div className="mt-4">
             <label
-              className={`${montserrat.className} mb-3 mt-5 block text-xs font-medium text-gray-900`}
+              className={`${montserrat.className} mb-3 mt-5 block text-xs font-medium text-gray-900 dark:text-white`}
               htmlFor="password"
             >
               Password
             </label>
             <div className="relative">
               <input
-                className={`${montserrat.className} peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
+                className={`${montserrat.className} peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white`}
                 id="password"
                 type="password"
                 name="password"

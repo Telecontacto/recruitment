@@ -1,34 +1,33 @@
 'use client';
 import {
-  UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { getTranslation } from '@/app/translations';
+import React from 'react';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Home', href: '/dashboard', icon: HomeIcon },
-  { name: 'Pipelines', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon },
-  /* {
-    name: 'Employees',
-    href: '/dashboard/invoices',
-    icon: UserGroupIcon,
-  }, */
+  { name: 'navDash', href: '/dashboard', icon: HomeIcon },
+  { name: 'navPipeline', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon },
 ];
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const { language } = useLanguage();
+
   return (
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
         return (
           <Link
-            key={link.name}
+            key={`${link.name}-${language}`}
             href={link.href}
             className={clsx(
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-200 dark:bg-gray-800 p-3 text-sm font-medium hover:bg-red-100 hover:text-red-500 md:flex-none md:justify-start md:p-2 md:px-3',
@@ -38,7 +37,7 @@ export default function NavLinks() {
             )}
           >
             <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
+            <p className="hidden md:block">{getTranslation(link.name, language)}</p>
           </Link>
         );
       })}

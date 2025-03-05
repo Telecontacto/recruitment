@@ -12,8 +12,8 @@ export async function authenticate(
     await signIn('credentials', {
       email: formData.get('email'),
       password: formData.get('password'),
-      redirectTo: '/dashboard',
-      redirect: true,
+      role: formData.get('role'), // Make sure this is being passed from your form
+      callbackUrl: '/dashboard',
     });
   } catch (error) {
     if (error instanceof AuthError) {

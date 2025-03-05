@@ -15,9 +15,10 @@ interface Event {
 interface calendarProps {
     name: string;
     phone: string;
+    id: number;
 }
 
-const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
+const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [expandedTimeSlot, setExpandedTimeSlot] = useState<string | null>(null);
@@ -78,14 +79,14 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
     const confirmAddEvent = async () => {
         if (selectedDate && newEventTime) {
             const newEvent: Event = {
-                ID: events.length + 1,
+                ID: id, // Use the id from props instead of events.length
                 NombreCitado: name,
                 Telefono: phone,
                 Fecha: selectedDate,
                 Hora: newEventTime,
             };
             setEvents([...events, newEvent]);
-            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime);
+            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, id); // Add id parameter
             if (msg) {
                 setModalMessage('Appointment set successfully');
                 setModalColor('bg-green-500');
@@ -110,13 +111,33 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    const timeSlots = Array.from({ length: 10 }, (_, i) => {
-        const hour = i + 8;
+    const timeSlots = Array.from({ length: 8 }, (_, i) => {
+        const hour = i + 9; // Start from 9
         return `${String(hour).padStart(2, '0')}:00`;
     });
 
     const toggleTimeSlot = (time: string) => {
         setExpandedTimeSlot(expandedTimeSlot === time ? null : time);
+    };
+
+    // Add function to check if a date has an appointment for current applicant
+    const hasAppointmentOnDate = (day: number) => {
+        const date = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        return events.some(event =>
+            event.Fecha === date &&
+            event.NombreCitado === name &&
+            event.Telefono === phone
+        );
+    };
+
+    // Add function to check if this time slot has an appointment for current applicant
+    const hasAppointmentInTimeSlot = (date: string, time: string) => {
+        return events.some(event =>
+            event.Fecha === date &&
+            event.Hora === time &&
+            event.NombreCitado === name &&
+            event.Telefono === phone
+        );
     };
 
     return (
@@ -147,15 +168,25 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
                 {Array.from({ length: firstDayOfMonth }, (_, index) => (
                     <div key={`empty-${index}`} className="p-4"></div>
                 ))}
-                {Array.from({ length: daysInMonth }, (_, index) => (
-                    <div
-                        key={index + 1}
-                        className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}` ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'}`}
-                        onClick={() => handleDayClick(index + 1)}
-                    >
-                        {index + 1}
-                    </div>
-                ))}
+                {Array.from({ length: daysInMonth }, (_, index) => {
+                    const hasAppointment = hasAppointmentOnDate(index + 1);
+                    return (
+                        <div
+                            key={index + 1}
+                            className={`p-4 border rounded-lg cursor-pointer ${selectedDate === `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(index + 1).padStart(2, '0')}`
+                                ? 'bg-red-500 text-white'
+                                : hasAppointment
+                                    ? 'bg-yellow-200 dark:bg-yellow-600 dark:text-white'
+                                    : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'
+                                }`}
+                            onClick={() => handleDayClick(index + 1)}
+                        >
+                            <span className={hasAppointment ? 'font-bold' : ''}>
+                                {index + 1}
+                            </span>
+                        </div>
+                    );
+                })}
             </div>
 
             {selectedDate && (
@@ -167,16 +198,26 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
                                 const isFull = eventsInTimeSlot.length >= 10;
+                                const hasAppointment = hasAppointmentInTimeSlot(selectedDate, time);
+
                                 return (
                                     <li
                                         key={index}
-                                        className={`p-2 border rounded-lg mb-1 cursor-pointer ${isFull ? 'bg-red-500 text-white' : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'}`}
+                                        className={`p-2 border rounded-lg mb-1 cursor-pointer ${isFull
+                                            ? 'bg-red-500 text-white'
+                                            : hasAppointment
+                                                ? 'bg-yellow-200 dark:bg-yellow-600 dark:text-white font-bold'
+                                                : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'
+                                            }`}
                                     >
-                                        <div onClick={() => toggleTimeSlot(time)}>{new Date('1970-01-01T' + time + 'Z')
-                                            .toLocaleTimeString('en-US',
-                                                { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
-                                            )}</div>
-                                        {!isFull && (
+                                        <div onClick={() => toggleTimeSlot(time)}>
+                                            {new Date('1970-01-01T' + time + 'Z')
+                                                .toLocaleTimeString('en-US',
+                                                    { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
+                                                )}
+                                            {hasAppointment && ' (Your Appointment)'}
+                                        </div>
+                                        {!isFull && !hasAppointment && (
                                             <button
                                                 onClick={() => addEvent(time)}
                                                 className="mt-2 text-sm text-red-500 hover:underline"
@@ -188,8 +229,9 @@ const Calendar: React.FC<calendarProps> = ({ name, phone }) => {
                                             <ul className="mt-2 list-disc list-inside">
                                                 {eventsInTimeSlot.length > 0 ? (
                                                     eventsInTimeSlot.map(event => (
-                                                        <li key={event.ID}>
+                                                        <li key={event.ID} className={event.NombreCitado === name ? 'font-bold' : ''}>
                                                             <strong>{event.NombreCitado}</strong>: {event.Telefono}
+                                                            {event.NombreCitado === name && ' (Your Appointment)'}
                                                         </li>
                                                     ))
                                                 ) : (

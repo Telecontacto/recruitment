@@ -11,14 +11,7 @@ export async function GET(request: Request) {
     }
 
     const query = `
-      SELECT Nombre, Celular, MediaType, FechaViaje, Email,
-      LunesDesde, LunesHasta, 
-      MartesDesde, MartesHasta, 
-      MiercolesDesde, MiercolesHasta, 
-      JuevesDesde, JuevesHasta, 
-      ViernesDesde, ViernesHasta, 
-      SabadoDesde, SabadoHasta, 
-      DomingoDesde, DomingoHasta
+      SELECT *
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
