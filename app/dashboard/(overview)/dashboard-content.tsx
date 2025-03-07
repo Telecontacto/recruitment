@@ -1,24 +1,18 @@
 'use client';
 
-import { useLanguage } from '@/app/context/LanguageContext';
-import { getTranslation } from '@/app/translations';
 import CardWrapper from '@/app/ui/dashboard/cards';
 import { montserrat } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { CardsSkeleton } from '@/app/ui/skeletons';
+import DateSelector from './date-selector';
 
-export default function DashboardContent() {
-    const { language } = useLanguage();
+export default function DashboardContent({ data }: { data: unknown }) {
 
     return (
         <main className={`${montserrat.className}`}>
-            <h1 className="mb-4 text-xl md:text-2xl">
-                {getTranslation('dashboard', language)}
-            </h1>
+            <div className="flex items-center justify-between mb-4">
+                <DateSelector />
+            </div>
             <div className="bg-gray-200 p-4 rounded-md">
-                <Suspense fallback={<CardsSkeleton />}>
-                    <CardWrapper date="2025-01" />
-                </Suspense>
+                <CardWrapper data={data} />
             </div>
         </main>
     );

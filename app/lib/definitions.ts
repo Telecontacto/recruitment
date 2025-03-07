@@ -137,3 +137,14 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export interface CreateApplicantModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (applicant: {
+    name: string;
+    email: string;
+    phone: string;
+    stage: string;
+  }) => void;
+}

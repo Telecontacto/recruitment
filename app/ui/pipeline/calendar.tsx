@@ -197,7 +197,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                         <ul className="list-none">
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
-                                const isFull = eventsInTimeSlot.length >= 10;
+                                const isFull = eventsInTimeSlot.length >= 2;
                                 const hasAppointment = hasAppointmentInTimeSlot(selectedDate, time);
 
                                 return (

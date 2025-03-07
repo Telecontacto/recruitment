@@ -5,12 +5,14 @@ import { montserrat } from '@/app/ui/fonts';
 import { Pipelines, BlankPipeline } from "@/app/ui/customers/pipeline";
 import { PipelineSkeleton } from '@/app/ui/skeletons';
 import { submitHandler } from '@/app/api/queryHandle/fetchApi';
+import { CreateApplicantModal } from './modal';
 
 export default function Form() {
   const [results, setResults] = useState<any>(null);
   const [date, setDate] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleSubmit = async (value: string) => {
     setIsLoading(true);
@@ -27,31 +29,52 @@ export default function Form() {
     }
   };
 
+  const handleCreateApplicant = async (applicant: any) => {
+    try {
+      // Add your API call here to create the applicant
+      console.log('Creating applicant:', applicant);
+      // Refresh the results after creating
+      if (date) {
+        await handleSubmit(date);
+      }
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
   return (
     <div className={`rounded-md bg-gray-200 p-4 md:p-6 ${montserrat.className}`}>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-      }}>
-        {/* Choose a Month */}
-        <div className="mb-4">
-          <label htmlFor="date" className="mb-2 block text-sm font-medium text-lg">
-            Choose a Month
-          </label>
-          <div className="relative">
-            <input
-              id="date"
-              name="date"
-              type="month"
-              onChange={(e) => {
-                const newDate = e.target.value;
-                setDate(e.target.value);
-                handleSubmit(newDate);
-              }}
-              className="peer block cursor-text rounded-md border border-gray-200 py-2 pl-10 bg-white text-black dark:bg-gray-800 dark:text-white"
-            />
+      <div className="flex justify-between items-center mb-4">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+        }}>
+          {/* Choose a Month */}
+          <div className="mb-4">
+            <label htmlFor="date" className="mb-2 block text-sm font-medium text-lg">
+              Choose a Month
+            </label>
+            <div className="relative">
+              <input
+                id="date"
+                name="date"
+                type="month"
+                onChange={(e) => {
+                  const newDate = e.target.value;
+                  setDate(e.target.value);
+                  handleSubmit(newDate);
+                }}
+                className="rounded-md border p-2 mb-4 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600 calendar-input"
+              />
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500"
+        >
+          Add Applicant
+        </button>
+      </div>
       {!date && !isLoading ? (
         <div className="stages text-center bg-gray-200">
           <BlankPipeline title='Received' />
@@ -63,6 +86,11 @@ export default function Form() {
       ) : (
         <Pipelines results={results} />
       )}
+      <CreateApplicantModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateApplicant}
+      />
     </div>
   );
 }

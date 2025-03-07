@@ -190,12 +190,29 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                                 disabled={!qualification.qualifies || qualification.qualifies === 'qualified'}
                             >
                                 <option value="">Select Reason</option>
-                                <option value="schedule_conflict">Schedule Conflict</option>
-                                <option value="location_issues">Location Issues</option>
-                                <option value="transportation_issues">Transportation Issues</option>
-                                <option value="language_barrier">Language Barrier</option>
-                                <option value="experience_mismatch">Experience Mismatch</option>
-                                <option value="technical_requirements">Technical Requirements Not Met</option>
+                                <option value="work_full_time">Cannot Work Full-Time</option>
+                                <option value="work_onsite">Cannot Work Onsite (Searching Remote Only)</option>
+                                <option value="lives_far_no_transport">Lives Far and Cannot Transport</option>
+                                <option value="complicated_schedule">Complicated Schedule (Student, Limited, Part-Time)</option>
+                                <option value="no_transport">No Transport</option>
+                                <option value="currently_cannot_work">Currently Cannot Work</option>
+                                <option value="ask_more_salary">Asks More than We Ask For (Salary)</option>
+                                <option value="ask_more_medical">Asks More than We Ask For (Medical Plan)</option>
+                                <option value="fails_requirements">Does Not Meet the Necessary Requirements</option>
+                                <option value="not_interested_salary">Not Interested (Salary)</option>
+                                <option value="not_interested_employment">Not Interested (Remote / Hybrid Employment)</option>
+                                <option value="arrogant_unprofessional">Arrogant Attitude & Unprofessional</option>
+                                <option value="over_qualified">Over Qualified</option>
+                                <option value="not_flow_interview">Did Not Flow in the Interview</option>
+                                <option value="not_live_pr">Does Not Live in PR</option>
+                                <option value="no_response">Hung Up / Does Not Answer</option>
+                                <option value="no_show">Did Not Arrive to Onboarding / Interview (Multiple Opportunities)</option>
+                                <option value="no_consistency">No Consistency in Employments</option>
+                                <option value="applied_accidentally">Applied Accidentally</option>
+                                <option value="other_job">Found Another Job</option>
+                                <option value="duplicate">Duplicate</option>
+                                <option value="worked_before_nq">Already Worked With Us (NQ)</option>
+                                <option value="multiple_attempts">Multiple Attempts</option>
                             </select>
                         </div>
                     </div>

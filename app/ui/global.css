@@ -164,3 +164,35 @@ input[type="radio"]:checked + span {
   background-color: #e51e25; /* Change to desired color when selected */
   color: white;
 }
+
+/* Calendar input styling */
+.calendar-input {
+  color-scheme: light;
+  background-color: #ffffff !important;
+  border-color: #e5e7eb;
+}
+
+.dark .calendar-input {
+  color-scheme: dark;
+  background-color: #1f2937 !important;
+  border-color: #374151;
+}
+
+/* Calendar icon customization */
+::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"><path fill="%23233239" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>') no-repeat center;
+  width: 20px;
+  height: 20px;
+}
+
+.dark ::-webkit-calendar-picker-indicator {
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"><path fill="%23ffffff" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>') no-repeat center;
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover effect */
+::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.8;
+}

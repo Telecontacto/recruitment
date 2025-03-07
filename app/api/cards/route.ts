@@ -22,6 +22,7 @@ export async function GET(request: Request) {
     const query = `
       select fuente, count(*) as total from RECLUTAMIENTO_SOLICITUDES
       where cast(timestamp as date) between @param1 and @param2
+      and fuente != 'whatsapp'
       group by fuente
       order by fuente
     `;

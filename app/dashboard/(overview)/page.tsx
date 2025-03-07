@@ -1,27 +1,44 @@
 import { auth } from '@/auth';
-import CardWrapper from '@/app/ui/dashboard/cards';
-import { montserrat } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
 import DashboardLayout from '@/app/ui/dashboard/dashboard-layout';
+import DashboardContent from './dashboard-content';
+import { fetchCardData } from '@/app/api/queryHandle/fetchApi';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
 };
 
-export default async function Page() {
-  const session = await auth();
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
-  return (
-    <DashboardLayout
-      className={montserrat.className}
-      userName={session?.user?.name}
-      userRole={session?.user?.role}
-    >
-      <Suspense fallback={<CardsSkeleton />}>
-        <CardWrapper date="2025-01" />
-      </Suspense>
-    </DashboardLayout>
-  );
+export default async function Page({ searchParams }: PageProps) {
+  try {
+    const session = await auth();
+    const params = await searchParams;
+    const dateParam = typeof params?.date === 'string' ? params.date : '2025-03';
+    const data = await fetchCardData(dateParam);
+
+    return (
+      <DashboardLayout
+        userName={session?.user?.name}
+        userRole={session?.user?.role}
+      >
+        <DashboardContent data={data} />
+      </DashboardLayout>
+    );
+  } catch (error) {
+    // Fallback to default date if there's an error
+    const session = await auth();
+    const data = await fetchCardData('2025-03');
+
+    return (
+      <DashboardLayout
+        userName={session?.user?.name}
+        userRole={session?.user?.role}
+      >
+        <DashboardContent data={data} />
+      </DashboardLayout>
+    );
+  }
 }
