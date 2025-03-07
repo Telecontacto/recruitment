@@ -21,6 +21,7 @@ export async function GET(request: Request) {
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
         cast(a.fecha as date) like @param1
+        and a.fuente != 'whatsapp'
       ORDER BY
         a.fecha DESC
     `;

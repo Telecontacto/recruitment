@@ -148,7 +148,7 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit }: CreateApplic
         name: '',
         email: '',
         phone: '',
-        stage: '1'
+        stage: '2'
     });
 
     const handleSubmit = (e: React.FormEvent) => {
