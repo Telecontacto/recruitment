@@ -6,9 +6,30 @@ interface Attempt {
     notes: string;
 }
 
+interface Qualification {
+    qualifies: string;
+    reason: string;
+    campaign: string;
+}
+
+interface InitialData {
+    attempt1?: string;
+    attempt2?: string;
+    attempt3?: string;
+    attempt4?: string;
+    action1?: string;
+    action2?: string;
+    action3?: string;
+    action4?: string;
+    notQualified: string;
+    notQualifiedReason?: string;
+    Campana?: string;
+    solicitorId: number;
+}
+
 interface AttemptsTabProps {
-    initialData: any;
-    onUpdateInfo: (newInfo: any) => void;
+    initialData: InitialData;
+    onUpdateInfo: (newInfo: Partial<InitialData>) => void;
     onUpdateSuccess: (message: string) => void;
 }
 
@@ -26,16 +47,19 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     ]);
 
     // Fixed qualification state initialization
-    const [qualification, setQualification] = useState(() => {
+    const [qualification, setQualification] = useState<Qualification>(() => {
         let qualificationStatus = '';
-        if (initialData.notQualified === 'true') {
+        // Convert string 'true'/'false' to actual boolean for comparison
+        const isNotQualified = initialData.notQualified === 'qualified' ? false : true;
+
+        if (isNotQualified) {
             qualificationStatus = 'not_qualified';
-        } else if (initialData.notQualified === 'false' && initialData.Campana) {
+        } else if (!isNotQualified && initialData.Campana) {
             qualificationStatus = 'qualified';
         }
 
         return {
-            qualifies: qualificationStatus,
+            qualifies: qualificationStatus || '',
             reason: initialData.notQualifiedReason || '',
             campaign: initialData.Campana || ''
         };
@@ -281,7 +305,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                                     className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                                     value={qualification.reason}
                                     onChange={(e) => handleQualificationChange('reason', e.target.value)}
-                                    disabled={!qualification.qualifies || qualification.qualifies === 'qualified'}
+                                    disabled={qualification.qualifies !== 'not_qualified'}
                                 >
                                     <option value="">Select Reason</option>
                                     <option value="work_full_time">Cannot Work Full-Time</option>
