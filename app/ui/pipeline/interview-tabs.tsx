@@ -11,6 +11,7 @@ import InterviewComments from './questions/InterviewComments';
 import ClarificationQuestions from './questions/ClarificationQuestions';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { getTranslation } from '@/app/translations';
+import { montserrat } from '@/app/ui/fonts';
 
 
 interface TabPanelProps {
@@ -73,7 +74,7 @@ export default function ReviewApplication({
     }, [isDarkMode]);
 
     return (
-        <div className="dark:bg-gray-800 dark:text-gray-300 duration-300 rounded-lg">
+        <div className={`dark:bg-gray-800 dark:text-gray-300 duration-300 rounded-lg ${montserrat.className}`}>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} centered aria-label="tabs" indicatorColor='secondary' textColor='inherit' className={tabClassName}>

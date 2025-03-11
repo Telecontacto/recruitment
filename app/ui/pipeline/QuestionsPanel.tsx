@@ -14,7 +14,13 @@ import {
 import { updateQuestions } from '@/app/api/queryHandle/fetchApi';
 import Modal from '@/app/ui/pipeline/modal';
 
-export default function QuestionsPanel({ data }: { data: any }) {
+interface QuestionsPanelProps {
+    data: any;
+    onUpdateInfo: (newInfo: any) => void;
+    onUpdateSuccess: (message: string) => void;
+}
+
+export default function QuestionsPanel({ data, onUpdateInfo, onUpdateSuccess }: QuestionsPanelProps) {
     const [answers, setAnswers] = useState(data);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -31,22 +37,13 @@ export default function QuestionsPanel({ data }: { data: any }) {
         setAnswers(newAnswers);
 
         try {
-            setIsSaving(true);
             await updateQuestions(data.solicitorId, newAnswers);
-            setModalMessage('Info Updated Successfully');
-            setModalColor('bg-green-500');
-            setModalOpen(true);
+            onUpdateSuccess('Info Updated Successfully');
+            onUpdateInfo(newAnswers); // Update parent state
         } catch (error) {
             console.error('Failed to save questions:', error);
-        } finally {
-            setIsSaving(false);
-            setTimeout(() => {
-                setModalOpen(false);
-                setModalMessage('');
-                setModalColor('');
-            }, 2000);
         }
-    }, [answers, data.solicitorId]);
+    }, [answers, data.solicitorId, onUpdateInfo, onUpdateSuccess]);
 
     return (
         <>

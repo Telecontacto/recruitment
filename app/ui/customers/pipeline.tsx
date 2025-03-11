@@ -25,6 +25,7 @@ export function Pipeline({
         nombre: string;
         statussolicitud: string;
         printed: string;
+        proyecto: string;
     }>;
     onDragStart: (item: any) => void;
     onDrop: (stage: string) => void;
@@ -55,7 +56,8 @@ export function Pipeline({
                         >
                             <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
                                 <strong>
-                                    {item.nombre}
+                                    Name: {item.nombre} <br />
+                                    Campaign: {item.proyecto} <br />
                                     {item.printed === "NO" && (
                                         <span className="text-red-500"> *</span>
                                     )}
@@ -181,7 +183,7 @@ export function Pipelines({
             "Hired/Rejected": [],
         };
 
-        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string; }) => {
+        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, proyecto: string; }) => {
             switch (item.statussolicitud) {
                 case "1":
                     updatedStages.Received.push(item);
@@ -246,6 +248,7 @@ export function Pipelines({
     };
 
     const validateAnswer = async (choice: string) => {
+        if (choice === "Cancel") return setHRModalOpen(false);
         try {
             await fetch(`/api/update?stage=${choice}&ID=${dragID}`, {
                 method: "POST",
@@ -278,7 +281,7 @@ export function Pipelines({
                 "Hired/Rejected": [],
             };
 
-            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string; }) => {
+            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, proyecto: string; }) => {
                 switch (item.statussolicitud.toLowerCase()) {
                     case "1":
                         updatedStages.Received.push(item);

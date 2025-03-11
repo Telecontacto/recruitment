@@ -210,7 +210,8 @@ export async function updateAttempts(
 export async function updateQualification(
   status: string,
   reason: string,
-  id: number
+  id: number,
+  campaign: string
 ): Promise<any> {
   try {
     const baseUrl = typeof window === 'undefined' 
@@ -225,7 +226,8 @@ export async function updateQualification(
       body: JSON.stringify({
         status,
         reason,
-        id
+        id,
+        campaign
       })
     });
 
@@ -381,6 +383,44 @@ export async function assignRecruiter(applicantId: number, recruiter: string): P
     return data;
   } catch (error) {
     console.error('Error in assignRecruiter:', error);
+    throw error;
+  }
+}
+
+export async function addApplicant(data: any): Promise<any> {
+  console.log('Starting addApplicant:', data);
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+    
+    const url = `${baseUrl}/api/applicants/createApplicant`;
+    console.log('Making request to:', url);
+          
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),  // This sends the data as JSON in the request body
+    });
+
+    console.log('Response status:', response.status);
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error('Request failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: responseData
+      });
+      throw new Error(responseData.error || `Error adding applicant: ${response.status}`);
+    }
+
+    console.log('Request successful:', responseData);
+    return responseData;
+  } catch (error) {
+    console.error('Error in addApplicant:', error);
     throw error;
   }
 }

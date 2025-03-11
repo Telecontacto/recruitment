@@ -8,11 +8,13 @@ interface Attempt {
 
 interface AttemptsTabProps {
     initialData: any;
+    onUpdateInfo: (newInfo: any) => void;
     onUpdateSuccess: (message: string) => void;
 }
 
 const AttemptsTab: React.FC<AttemptsTabProps> = ({
     initialData,
+    onUpdateInfo,
     onUpdateSuccess
 }) => {
     // Initialize states from initialData
@@ -23,10 +25,38 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
         { contacted: initialData.attempt4 || '', notes: initialData.action4 || '' }
     ]);
 
-    const [qualification, setQualification] = useState({
-        qualifies: initialData.notQualified || '',
-        reason: initialData.notQualifiedReason || '',
+    // Fixed qualification state initialization
+    const [qualification, setQualification] = useState(() => {
+        let qualificationStatus = '';
+        if (initialData.notQualified === 'true') {
+            qualificationStatus = 'not_qualified';
+        } else if (initialData.notQualified === 'false' && initialData.Campana) {
+            qualificationStatus = 'qualified';
+        }
+
+        return {
+            qualifies: qualificationStatus,
+            reason: initialData.notQualifiedReason || '',
+            campaign: initialData.Campana || ''
+        };
     });
+
+    // Add this new state for copy feedback
+    const [copyFeedback, setCopyFeedback] = useState('');
+
+    // Add this new function to handle copy
+    const handleCopyLink = () => {
+        const link = `https://reports.telecontacto.com/reclutamiento/Solicitud_Empleo_w.php?ID=${initialData.solicitorId}`;
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                setCopyFeedback('Link copied!');
+                setTimeout(() => setCopyFeedback(''), 2000); // Clear feedback after 2 seconds
+            })
+            .catch(() => {
+                setCopyFeedback('Failed to copy');
+                setTimeout(() => setCopyFeedback(''), 2000);
+            });
+    };
 
     async function handleAttemptChange(index: number, field: string, value: string): Promise<void> {
         const updatedAttempts = [...attempts];
@@ -36,19 +66,21 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
         };
         setAttempts(updatedAttempts);
 
-        if (updatedAttempts[index].contacted || updatedAttempts[index].notes) {
-            try {
-                await updateAttempts(
-                    index + 1,
-                    updatedAttempts[index].contacted,
-                    updatedAttempts[index].notes,
-                    initialData.solicitorId
-                );
-                onUpdateSuccess('Attempt Updated Successfully');
-            } catch (error) {
-                console.error('Failed to update attempt:', error);
-                setAttempts(attempts);
-            }
+        try {
+            await updateAttempts(
+                index + 1,
+                updatedAttempts[index].contacted,
+                updatedAttempts[index].notes,
+                initialData.solicitorId
+            );
+            onUpdateSuccess('Attempt Updated Successfully');
+            onUpdateInfo({
+                [`attempt${index + 1}`]: updatedAttempts[index].contacted,
+                [`action${index + 1}`]: updatedAttempts[index].notes
+            });
+        } catch (error) {
+            console.error('Failed to update attempt:', error);
+            setAttempts(attempts);
         }
     }
 
@@ -57,23 +89,35 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
             ...qualification,
             [field]: value
         };
-        setQualification(updatedQualification);
 
-        if (updatedQualification.qualifies) {
-            try {
-                if (updatedQualification.qualifies === 'qualified') {
-                    updatedQualification.reason = '';
-                }
-                await updateQualification(
-                    updatedQualification.qualifies,
-                    updatedQualification.reason,
-                    initialData.solicitorId
-                );
-                onUpdateSuccess('Qualification Updated Successfully');
-            } catch (error) {
-                console.error('Failed to update qualification:', error);
-                setQualification(qualification);
+        // Handle field clearing based on qualification status
+        if (field === 'qualifies') {
+            if (value === 'qualified') {
+                updatedQualification.reason = '';
+            } else if (value === 'not_qualified') {
+                updatedQualification.campaign = '';
             }
+        }
+
+        try {
+            await updateQualification(
+                updatedQualification.qualifies,
+                updatedQualification.reason,
+                initialData.solicitorId,
+                updatedQualification.campaign
+            );
+
+            setQualification(updatedQualification);
+            onUpdateSuccess('Qualification Updated Successfully');
+
+            // Update parent state with correct format
+            onUpdateInfo({
+                notQualified: updatedQualification.qualifies === 'not_qualified' ? 'true' : 'false',
+                notQualifiedReason: updatedQualification.reason,
+                Campana: updatedQualification.campaign
+            });
+        } catch (error) {
+            console.error('Failed to update qualification:', error);
         }
     }
 
@@ -179,42 +223,93 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                                 <option value="not_qualified">Not Qualified</option>
                             </select>
                         </div>
-                        <div>
-                            <label className="mb-2 block text-lg font-medium dark:text-gray-300">
-                                Reason (if not qualified)
-                            </label>
-                            <select
-                                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                value={qualification.reason}
-                                onChange={(e) => handleQualificationChange('reason', e.target.value)}
-                                disabled={!qualification.qualifies || qualification.qualifies === 'qualified'}
-                            >
-                                <option value="">Select Reason</option>
-                                <option value="work_full_time">Cannot Work Full-Time</option>
-                                <option value="work_onsite">Cannot Work Onsite (Searching Remote Only)</option>
-                                <option value="lives_far_no_transport">Lives Far and Cannot Transport</option>
-                                <option value="complicated_schedule">Complicated Schedule (Student, Limited, Part-Time)</option>
-                                <option value="no_transport">No Transport</option>
-                                <option value="currently_cannot_work">Currently Cannot Work</option>
-                                <option value="ask_more_salary">Asks More than We Ask For (Salary)</option>
-                                <option value="ask_more_medical">Asks More than We Ask For (Medical Plan)</option>
-                                <option value="fails_requirements">Does Not Meet the Necessary Requirements</option>
-                                <option value="not_interested_salary">Not Interested (Salary)</option>
-                                <option value="not_interested_employment">Not Interested (Remote / Hybrid Employment)</option>
-                                <option value="arrogant_unprofessional">Arrogant Attitude & Unprofessional</option>
-                                <option value="over_qualified">Over Qualified</option>
-                                <option value="not_flow_interview">Did Not Flow in the Interview</option>
-                                <option value="not_live_pr">Does Not Live in PR</option>
-                                <option value="no_response">Hung Up / Does Not Answer</option>
-                                <option value="no_show">Did Not Arrive to Onboarding / Interview (Multiple Opportunities)</option>
-                                <option value="no_consistency">No Consistency in Employments</option>
-                                <option value="applied_accidentally">Applied Accidentally</option>
-                                <option value="other_job">Found Another Job</option>
-                                <option value="duplicate">Duplicate</option>
-                                <option value="worked_before_nq">Already Worked With Us (NQ)</option>
-                                <option value="multiple_attempts">Multiple Attempts</option>
-                            </select>
-                        </div>
+                        {qualification.qualifies === 'qualified' && (
+                            <>
+                                <div className="mt-4">
+                                    <label className="mb-2 block text-lg font-medium dark:text-gray-300">
+                                        Select Campaign
+                                    </label>
+                                    <select
+                                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                        value={qualification.campaign}
+                                        onChange={(e) => handleQualificationChange('campaign', e.target.value)}
+                                    >
+                                        <option value="">Select Campaign</option>
+                                        <option value='AAA'>AAA</option>
+                                        <option value='Answering'>Answering</option>
+                                        <option value='CDBG'>CDBG</option>
+                                        <option value='Cosvi'>Cosvi</option>
+                                        <option value='CVR'>CVR</option>
+                                        <option value='Encuestas'>Encuestas</option>
+                                        <option value='Humana'>Humana</option>
+                                        <option value='Humana Stars'>Humana Stars</option>
+                                        <option value='Medicaid'>Medicaid</option>
+                                        <option value='Medicaid Providers'>Medicaid Providers</option>
+                                        <option value='MTM'>MTM</option>
+                                        <option value='MTM Dispatch'>MTM Dispatch</option>
+                                        <option value='Nourished'>Nourished</option>
+                                        <option value='PRFEDCU'>PRFEDCU</option>
+                                        <option value='Sunnova'>Sunnova</option>
+                                    </select>
+                                </div>
+                                <div className="mt-4">
+                                    <label className="mb-2 block text-lg font-medium dark:text-gray-300">
+                                        If the applicant is qualified, but has not filled out the application, copy the link here and send it to them.
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={handleCopyLink}
+                                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500 transition-colors"
+                                        >
+                                            Copy Application Link
+                                        </button>
+                                        {copyFeedback && (
+                                            <span className="text-sm text-green-500 dark:text-green-400">
+                                                {copyFeedback}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {qualification.qualifies === 'not_qualified' && (
+                            <div>
+                                <label className="mb-2 block text-lg font-medium dark:text-gray-300">
+                                    Reason (if not qualified)
+                                </label>
+                                <select
+                                    className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                    value={qualification.reason}
+                                    onChange={(e) => handleQualificationChange('reason', e.target.value)}
+                                    disabled={!qualification.qualifies || qualification.qualifies === 'qualified'}
+                                >
+                                    <option value="">Select Reason</option>
+                                    <option value="work_full_time">Cannot Work Full-Time</option>
+                                    <option value="work_onsite">Cannot Work Onsite (Searching Remote Only)</option>
+                                    <option value="lives_far_no_transport">Lives Far and Cannot Transport</option>
+                                    <option value="complicated_schedule">Complicated Schedule (Student, Limited, Part-Time)</option>
+                                    <option value="no_transport">No Transport</option>
+                                    <option value="currently_cannot_work">Currently Cannot Work</option>
+                                    <option value="ask_more_salary">Asks More than We Ask For (Salary)</option>
+                                    <option value="ask_more_medical">Asks More than We Ask For (Medical Plan)</option>
+                                    <option value="fails_requirements">Does Not Meet the Necessary Requirements</option>
+                                    <option value="not_interested_salary">Not Interested (Salary)</option>
+                                    <option value="not_interested_employment">Not Interested (Remote / Hybrid Employment)</option>
+                                    <option value="arrogant_unprofessional">Arrogant Attitude & Unprofessional</option>
+                                    <option value="over_qualified">Over Qualified</option>
+                                    <option value="not_flow_interview">Did Not Flow in the Interview</option>
+                                    <option value="not_live_pr">Does Not Live in PR</option>
+                                    <option value="no_response">Hung Up / Does Not Answer</option>
+                                    <option value="no_show">Did Not Arrive to Onboarding / Interview (Multiple Opportunities)</option>
+                                    <option value="no_consistency">No Consistency in Employments</option>
+                                    <option value="applied_accidentally">Applied Accidentally</option>
+                                    <option value="other_job">Found Another Job</option>
+                                    <option value="duplicate">Duplicate</option>
+                                    <option value="worked_before_nq">Already Worked With Us (NQ)</option>
+                                    <option value="multiple_attempts">Multiple Attempts</option>
+                                </select>
+                            </div>
+                        )}
                     </div>
                 </div>
             )

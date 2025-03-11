@@ -96,6 +96,14 @@ export default function ReviewApplication({
         }, 2000);
     };
 
+    // Add function to update info state
+    const updateInfo = (newInfo: any) => {
+        setInfo((prev: any) => ({
+            ...prev,
+            ...newInfo
+        }));
+    };
+
     return (
         <>
             <div className="dark:bg-gray-800 transition-colors duration-300 rounded-lg">
@@ -117,20 +125,35 @@ export default function ReviewApplication({
                         </Tabs>
                     </Box>
                     <CustomTabPanel value={value} index={0}>
-                        <PersonalInfoPanel data={info} />
+                        <PersonalInfoPanel
+                            data={info}
+                            onUpdateInfo={updateInfo}
+                            onUpdateSuccess={handleModalUpdate}
+                        />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
-                        <QuestionsPanel data={info} />
+                        <QuestionsPanel
+                            data={info}
+                            onUpdateInfo={updateInfo}
+                            onUpdateSuccess={handleModalUpdate}
+                        />
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={2}>
                         <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
-                            <Calendar name={info.name} phone={info.phone} id={info.solicitorId} />
+                            <Calendar
+                                name={info.name}
+                                phone={info.phone}
+                                id={info.solicitorId}
+                                onUpdateInfo={updateInfo}
+                                onUpdateSuccess={handleModalUpdate}
+                            />
                         </div>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={3}>
                         <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
                             <AttemptsTab
-                                initialData={data[0]}
+                                initialData={info}
+                                onUpdateInfo={updateInfo}
                                 onUpdateSuccess={handleModalUpdate}
                             />
                         </div>

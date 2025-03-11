@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { fetchCalendarAppointments, insertCalendarAppointment } from '@/app/api/queryHandle/fetchApi';
 import Modal from '@/app/ui/pipeline/modal';
-
+import { montserrat } from '@/app/ui/fonts';
 
 interface Event {
     ID: number;
@@ -16,17 +16,9 @@ interface calendarProps {
     name: string;
     phone: string;
     id: number;
-    onUpdateInfo: (newInfo: any) => void;
-    onUpdateSuccess: (message: string) => void;
 }
 
-const Calendar: React.FC<calendarProps> = ({
-    name,
-    phone,
-    id,
-    onUpdateInfo,
-    onUpdateSuccess
-}) => {
+const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [expandedTimeSlot, setExpandedTimeSlot] = useState<string | null>(null);
@@ -93,22 +85,18 @@ const Calendar: React.FC<calendarProps> = ({
                 Fecha: selectedDate,
                 Hora: newEventTime,
             };
-
-            try {
-                let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, id);
-                if (msg) {
-                    setEvents([...events, newEvent]);
-                    onUpdateSuccess('Appointment set successfully');
-                    onUpdateInfo({
-                        appointmentDate: selectedDate,
-                        appointmentTime: newEventTime,
-                        hasAppointment: true
-                    });
-                }
-            } catch (error) {
-                console.error('Failed to set appointment:', error);
+            setEvents([...events, newEvent]);
+            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, id); // Add id parameter
+            if (msg) {
+                setModalMessage('Appointment set successfully');
+                setModalColor('bg-green-500');
+                setModalOpen(true);
+                setTimeout(() => {
+                    setModalOpen(false);
+                    setModalMessage('');
+                    setModalColor('');
+                }, 2000);
             }
-
             setShowAddEventModal(false);
             setNewEventTime(null);
         }
@@ -209,7 +197,7 @@ const Calendar: React.FC<calendarProps> = ({
                         <ul className="list-none">
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
-                                const isFull = eventsInTimeSlot.length >= 2;
+                                const isFull = eventsInTimeSlot.length >= 10;
                                 const hasAppointment = hasAppointmentInTimeSlot(selectedDate, time);
 
                                 return (

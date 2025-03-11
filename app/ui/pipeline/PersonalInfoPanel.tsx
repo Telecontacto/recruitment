@@ -11,6 +11,12 @@ interface ScheduleInputsProps {
     onBlur: (day: string, field: string, value: string) => void;
 }
 
+interface PersonalInfoPanelProps {
+    data: any;
+    onUpdateInfo: (newInfo: any) => void;
+    onUpdateSuccess: (message: string) => void;
+}
+
 const ScheduleInputs: React.FC<ScheduleInputsProps> = ({ day, from, to, onChange, onBlur }) => {
     return (
         <div key={day} className='mb-4'>
@@ -35,7 +41,7 @@ const ScheduleInputs: React.FC<ScheduleInputsProps> = ({ day, from, to, onChange
     );
 };
 
-export default function PersonalInfoPanel({ data }: { data: any }) {
+export default function PersonalInfoPanel({ data, onUpdateInfo, onUpdateSuccess }: PersonalInfoPanelProps) {
     const [info, setInfo] = useState(data);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -48,9 +54,8 @@ export default function PersonalInfoPanel({ data }: { data: any }) {
         try {
             setIsSaving(true);
             await updatePersonalInfo(info.solicitorId, newInfo);
-            setModalMessage('Info Updated Successfully');
-            setModalColor('bg-green-500');
-            setModalOpen(true);
+            onUpdateSuccess('Info Updated Successfully');
+            onUpdateInfo(newInfo); // Update parent state
         } catch (error) {
             console.error('Failed to save personal info:', error);
         } finally {
@@ -61,7 +66,7 @@ export default function PersonalInfoPanel({ data }: { data: any }) {
                 setModalColor('');
             }, 2000);
         }
-    }, [info.solicitorId]);
+    }, [info.solicitorId, onUpdateInfo, onUpdateSuccess]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

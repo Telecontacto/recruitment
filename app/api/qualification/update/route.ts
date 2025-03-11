@@ -3,23 +3,34 @@ import { executeQuery } from '@/app/lib/data-mssql';
 
 export async function POST(request: Request) {
   try {
-    const { status, reason, id } = await request.json();
+    const { status, reason, campaign, id } = await request.json();
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
     const query = `
-            UPDATE ENTREVISTA_INICIAL 
-            SET notQualified = @param1,
-                notQualifiedReason = @param2
-            WHERE solicitorId = @param3;
+            UPDATE RECLUTAMIENTO_SOLICITUDES
+            SET proyecto = @param1
+            WHERE ID = @param2;
             SELECT @@ROWCOUNT as affectedRows;
     `;
-    const params = [status, reason, id];
+    const params = [campaign, id];
 
     const result = await executeQuery<any[]>(query, params);
-    return NextResponse.json(result, { status: 200 });
+
+    const queryInitial = `
+            UPDATE ENTREVISTA_INICIAL 
+            SET notQualified = @param1,
+                notQualifiedReason = @param2,
+                Campana = @param3
+            WHERE solicitorId = @param4;
+            SELECT @@ROWCOUNT as affectedRows;
+    `;
+    const paramsInitial = [status, reason, campaign, id];
+
+    const resultInitial = await executeQuery<any[]>(queryInitial, paramsInitial);
+    return NextResponse.json(resultInitial, { status: 200 });
 
   } catch (error) {
     console.error('Error in API route:', error);

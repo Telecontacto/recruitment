@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
-import { executeQuery } from '@/app/lib/data-mssql'; // Replace with your actual utility
-import { attendantStatus } from '@/app/lib/definitions'; // Replace with your type definitions
+import { executeQuery } from '@/app/lib/data-mssql';
+import { attendantStatus } from '@/app/lib/definitions';
 
 export async function GET(request: Request) {
+  console.log('API route started');
   try {
-    const { searchParams } = new URL(request.url); // Extract query parameters
-    const startDate = searchParams.get('startDate'); // Get the `startDate` parameter
+    const { searchParams } = new URL(request.url);
+    const startDate = searchParams.get('startDate');
+    console.log('Received startDate:', startDate);
 
     if (!startDate) {
+      console.log('Error: Start date is missing');
       return NextResponse.json({ error: 'Start date is required' }, { status: 400 });
     }
 
@@ -16,7 +19,8 @@ export async function GET(request: Request) {
         a.nombre,
         a.id,
         a.statussolicitud,
-        a.printed
+        a.printed,
+        a.proyecto
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
@@ -26,12 +30,19 @@ export async function GET(request: Request) {
         a.fecha DESC
     `;
     const params = [`${startDate}%`];
+    console.log('Executing query with params:', params);
 
     const result = await executeQuery<attendantStatus[]>(query, params);
+    console.log(`Query completed successfully. Found ${result.length} records`);
+    
     return NextResponse.json(result, { status: 200 });
 
   } catch (error) {
-    console.error('Error in API route:', error);
+    console.error('Detailed error in API route:', {
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      stack: error instanceof Error ? error.stack : undefined,
+      cause: error instanceof Error ? error.cause : undefined
+    });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
