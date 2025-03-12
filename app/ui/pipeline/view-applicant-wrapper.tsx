@@ -10,12 +10,14 @@ export default function ViewApplicantWrapper({
     applicant,
     id,
     stageNumber,
-    applicantData
+    applicantData,
+    session
 }: {
     applicant: string;
     id: string;
     stageNumber: number;
     applicantData: any;
+    session: any;
 }) {
     console.log(applicantData);
     return (
@@ -28,10 +30,12 @@ export default function ViewApplicantWrapper({
                     ]}
                 />
                 <div className="flex items-center gap-4">
-                    <EditApplicationForm
-                        id={Number(id)}
-                        interviewer={applicantData[0].entrevistador}
-                    />
+                    {session?.user?.role === 1 && (
+                        <EditApplicationForm
+                            id={Number(id)}
+                            interviewer={applicantData[0].entrevistador}
+                        />
+                    )}
                     <StageSelector
                         currentStage="view"
                         id={id}

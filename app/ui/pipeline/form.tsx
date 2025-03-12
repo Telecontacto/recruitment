@@ -1,5 +1,5 @@
 'use client'; // Ensure this runs on the client side
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { montserrat } from '@/app/ui/fonts';
 //import { Button } from '@/app/ui/button';
 import { Pipelines, BlankPipeline } from "@/app/ui/customers/pipeline";
@@ -8,10 +8,19 @@ import { submitHandler, addApplicant } from '@/app/api/queryHandle/fetchApi';
 import Modal, { CreateApplicantModal } from '@/app/ui/pipeline/modal';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
+// Get yesterday's date in YYYY-MM-DD format
+const getYesterday = () => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return yesterday.toISOString().split('T')[0];
+};
+
+const yesterday = getYesterday();
+
 export default function Form() {
   const [results, setResults] = useState<any>(null);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(yesterday);
+  const [endDate, setEndDate] = useState(yesterday);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -20,6 +29,10 @@ export default function Form() {
   const [ModalMessage, setModalMessage] = useState('')
   const [ModalColor, setModalColor] = useState('')
 
+  // Fetch data once when component mounts
+  useEffect(() => {
+    handleSubmit(startDate, endDate);
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleSubmit = async (start: string, end: string) => {
     setIsLoading(true);
@@ -71,9 +84,6 @@ export default function Form() {
   };
 
   const handleDateChange = (start: string, end: string) => {
-    const startMonth = start ? new Date(start).getMonth() + 1 : null;
-    const endMonth = end ? new Date(end).getMonth() + 1 : null;
-
     setStartDate(start);
     setEndDate(end);
     if (start && end) {
@@ -87,6 +97,8 @@ export default function Form() {
       handleSubmit(startDate, endDate);
     }
   };
+
+
 
   return (
     <div className={`rounded-md bg-gray-200 p-4 md:p-6 ${montserrat.className}`}>

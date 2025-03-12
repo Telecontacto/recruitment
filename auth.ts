@@ -10,6 +10,7 @@ import { sha256 } from 'js-sha256';
 // Define custom types
 type UserWithRole = User & {
   role: string;
+  lastName: string;
 };
 
 declare module 'next-auth' {
@@ -102,7 +103,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           console.log('Authentication successful, returning user data');
           return {
             id: user.id.toString(),
-            name: user.name,
+            name: user.name + ' ' + user.lastName,
+            lastName: user.lastName,
             email: user.email,
             password: user.password,
             role: user.role,
