@@ -1,5 +1,6 @@
 import { auth } from '@/auth';
 import { Metadata } from 'next';
+import { useSearchParams } from 'next/navigation';
 import DashboardLayout from '@/app/ui/dashboard/dashboard-layout';
 import DashboardContent from './dashboard-content';
 import { fetchCardData } from '@/app/api/queryHandle/fetchApi';
@@ -9,10 +10,11 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: { [key: string]: string | string[] };
+  searchParams: Record<string, string | string[]>;
 }
 
-export default async function Page({ searchParams = {} }: PageProps) {
+export default async function Page({ searchParams }: PageProps) {
   const session = await auth();
   const today = new Date().toISOString().split('T')[0];
 
