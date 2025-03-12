@@ -1,33 +1,37 @@
 import { auth } from '@/auth';
 import { Metadata } from 'next';
-import { useSearchParams } from 'next/navigation';
 import DashboardLayout from '@/app/ui/dashboard/dashboard-layout';
 import DashboardContent from './dashboard-content';
 import { fetchCardData } from '@/app/api/queryHandle/fetchApi';
+import DateParamsHandler from './components/DateParamsHandler';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
 };
 
-interface PageProps {
-  params: { [key: string]: string | string[] };
-  searchParams: Record<string, string | string[]>;
-}
-
-export default async function Page({ searchParams }: PageProps) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
   const session = await auth();
   const today = new Date().toISOString().split('T')[0];
 
-  const startDate = typeof searchParams.startDate === 'string'
-    ? searchParams.startDate
-    : today;
-
-  const endDate = typeof searchParams.endDate === 'string'
-    ? searchParams.endDate
-    : today;
+  // Await searchParams before using
+  const resolvedParams = await Promise.resolve(searchParams);
 
   try {
+    // Process search parameters at the top level
+    const startDate = typeof resolvedParams?.startDate === 'string'
+      ? resolvedParams.startDate
+      : today;
+
+    const endDate = typeof resolvedParams?.endDate === 'string'
+      ? resolvedParams.endDate
+      : today;
+
     const data = await fetchCardData(startDate, endDate);
+
     return (
       <DashboardLayout
         userName={session?.user?.name}
@@ -37,7 +41,6 @@ export default async function Page({ searchParams }: PageProps) {
       </DashboardLayout>
     );
   } catch (error) {
-    // Fallback to current date if there's an error
     const data = await fetchCardData(today, today);
     return (
       <DashboardLayout
