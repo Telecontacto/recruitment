@@ -9,16 +9,23 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
-export default async function Page({ searchParams }: PageProps) {
-  try {
-    const session = await auth();
-    const params = await searchParams;
-    const dateParam = typeof params?.date === 'string' ? params.date : '2025-03';
-    const data = await fetchCardData(dateParam);
+export default async function Page({ searchParams = {} }: PageProps) {
+  const session = await auth();
+  const today = new Date().toISOString().split('T')[0];
 
+  const startDate = typeof searchParams.startDate === 'string'
+    ? searchParams.startDate
+    : today;
+
+  const endDate = typeof searchParams.endDate === 'string'
+    ? searchParams.endDate
+    : today;
+
+  try {
+    const data = await fetchCardData(startDate, endDate);
     return (
       <DashboardLayout
         userName={session?.user?.name}
@@ -28,10 +35,8 @@ export default async function Page({ searchParams }: PageProps) {
       </DashboardLayout>
     );
   } catch (error) {
-    // Fallback to default date if there's an error
-    const session = await auth();
-    const data = await fetchCardData('2025-03');
-
+    // Fallback to current date if there's an error
+    const data = await fetchCardData(today, today);
     return (
       <DashboardLayout
         userName={session?.user?.name}

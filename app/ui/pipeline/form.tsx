@@ -10,7 +10,8 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 export default function Form() {
   const [results, setResults] = useState<any>(null);
-  const [date, setDate] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -20,12 +21,12 @@ export default function Form() {
   const [ModalColor, setModalColor] = useState('')
 
 
-  const handleSubmit = async (value: string) => {
+  const handleSubmit = async (start: string, end: string) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const data = await submitHandler(value, '/api');
+      const data = await submitHandler({ startDate: start, endDate: end }, '/api');
       if (data) {
         setResults(data);
       }
@@ -48,8 +49,8 @@ export default function Form() {
 
         // Wait for the modal to show before refreshing data
         setTimeout(async () => {
-          if (date) {
-            await handleSubmit(date);
+          if (startDate && endDate) {
+            await handleSubmit(startDate, endDate);
           }
           setIsModalOpen(false);
           setModalMessage('');
@@ -69,9 +70,21 @@ export default function Form() {
     }
   };
 
+  const handleDateChange = (start: string, end: string) => {
+    const startMonth = start ? new Date(start).getMonth() + 1 : null;
+    const endMonth = end ? new Date(end).getMonth() + 1 : null;
+
+    setStartDate(start);
+    setEndDate(end);
+    if (start && end) {
+      handleSubmit(start, end);
+    }
+    return true;
+  };
+
   const refreshData = () => {
-    if (date) {
-      handleSubmit(date);
+    if (startDate && endDate) {
+      handleSubmit(startDate, endDate);
     }
   };
 
@@ -81,22 +94,27 @@ export default function Form() {
         <form onSubmit={(e) => {
           e.preventDefault();
         }}>
-          {/* Choose a Month */}
           <div className="mb-4">
-            <label htmlFor="date" className="mb-2 block text-sm font-medium text-lg">
-              Choose a Month
+            <label htmlFor="date-range" className="mb-2 block text-sm font-medium text-lg">
+              Select Date Range
             </label>
             <div className="relative flex gap-2">
               <input
-                id="date"
-                name="date"
-                type="month"
-                onChange={(e) => {
-                  const newDate = e.target.value;
-                  setDate(e.target.value);
-                  handleSubmit(newDate);
-                }}
-                className="rounded-md border p-2 mb-4 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600 calendar-input"
+                id="start-date"
+                name="start-date"
+                type="date"
+                value={startDate}
+                onChange={(e) => handleDateChange(e.target.value, endDate)}
+                className="rounded-md border p-2 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600"
+              />
+              <span className="self-center">to</span>
+              <input
+                id="end-date"
+                name="end-date"
+                type="date"
+                value={endDate}
+                onChange={(e) => handleDateChange(startDate, e.target.value)}
+                className="rounded-md border p-2 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600"
               />
               <button
                 onClick={refreshData}
@@ -106,6 +124,7 @@ export default function Form() {
                 <ArrowPathIcon className="w-6 h-6" />
               </button>
             </div>
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
         </form>
         <button
@@ -115,7 +134,7 @@ export default function Form() {
           Add Applicant
         </button>
       </div>
-      {!date && !isLoading ? (
+      {!startDate && !endDate && !isLoading ? (
         <div className="stages text-center bg-gray-200">
           <BlankPipeline title='Received' />
           <BlankPipeline title='In Review' />

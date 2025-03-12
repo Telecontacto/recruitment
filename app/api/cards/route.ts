@@ -4,20 +4,14 @@ import { executeQuery } from '@/app/lib/data-mssql';
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const startDate = searchParams.get('startDate'); // Format: "YYYY-MM"
+    const startDate = searchParams.get('startDate') ?? '2025-03-01';
+    const endDate = searchParams.get('endDate') ?? '2025-03-31';
 
-    if (!startDate) {
-      return NextResponse.json({ error: 'Start date is required.' }, { status: 400 });
+    console.log('Received dates:', { startDate, endDate });
+
+    if (!startDate || !endDate) {
+      return NextResponse.json({ error: 'Both start date and end date are required.' }, { status: 400 });
     }
-
-    // Split the startDate into year and month
-    const [year, month] = startDate.split('-');
-
-    if (!year || !month) {
-      return NextResponse.json({ error: 'Invalid date format. Use YYYY-MM' }, { status: 400 });
-    }
-
-    console.log(`Fetching data for year: ${year}, month: ${month}`);
 
     const query = `
       select fuente, count(*) as total from RECLUTAMIENTO_SOLICITUDES
@@ -27,15 +21,9 @@ export async function GET(request: Request) {
       order by fuente
     `;
 
-    const firstDayOfMonth = `${year}-${month}-01`;
-    const lastDayOfMonth = `${year}-${month}-${new Date(parseInt(year), parseInt(month), 0).getDate()}`;
+    const params = [startDate, endDate];
 
-    const params = [
-      firstDayOfMonth,
-      lastDayOfMonth
-    ];
-
-    console.log(firstDayOfMonth, lastDayOfMonth);
+    console.log('Date range:', startDate, endDate);
 
     const result = await executeQuery<any[]>(query, params);
     return NextResponse.json(result, { status: 200 });

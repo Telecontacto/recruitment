@@ -1,27 +1,25 @@
-export const submitHandler = async (
-  value: string,
-  endpoint: string,
-): Promise<any> => {
-  if (!value) {
-    alert('Please select a date');
-    return;
+export async function submitHandler(
+  dateRange: { startDate: string, endDate: string },
+  endpoint: string
+) {
+  const baseUrl = typeof window === 'undefined' 
+    ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+    : '';
+
+  const response = await fetch(`${baseUrl}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dateRange),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
   }
 
-  try {
-    const response = await fetch(`${endpoint}?startDate=${value}`, {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-};
+  return response.json();
+}
 
 export const fetchApplicant = async (
   value: string,
@@ -103,14 +101,16 @@ export const insertCalendarAppointment = async (
   }
 };
 
-export async function fetchCardData(date: string): Promise<any> {
+export async function fetchCardData(startDate: string, endDate: string): Promise<any> {
   try {
     const baseUrl = typeof window === 'undefined' 
     ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
     : '';
-    const response = await fetch(`${baseUrl}/api/cards?startDate=${date}`, {
-      method: 'GET',
-    });
+    console.log('fetchCardData:', { startDate, endDate });
+    const response = await fetch(
+      `${baseUrl}/api/cards?startDate=${startDate}&endDate=${endDate}`,
+      { method: 'GET' }
+    );
 
     if (!response.ok) {
       throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);

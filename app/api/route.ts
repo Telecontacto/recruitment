@@ -2,16 +2,16 @@ import { NextResponse } from 'next/server';
 import { executeQuery } from '@/app/lib/data-mssql';
 import { attendantStatus } from '@/app/lib/definitions';
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   console.log('API route started');
   try {
-    const { searchParams } = new URL(request.url);
-    const startDate = searchParams.get('startDate');
-    console.log('Received startDate:', startDate);
+    const body = await request.json();
+    const { startDate, endDate } = body;
+    console.log('Received dates:', { startDate, endDate });
 
-    if (!startDate) {
-      console.log('Error: Start date is missing');
-      return NextResponse.json({ error: 'Start date is required' }, { status: 400 });
+    if (!startDate || !endDate) {
+      console.log('Error: Start date or end date is missing');
+      return NextResponse.json({ error: 'Both start date and end date are required' }, { status: 400 });
     }
 
     const query = `
@@ -24,12 +24,12 @@ export async function GET(request: Request) {
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
-        cast(a.fecha as date) like @param1
+        cast(a.fecha as date) between @param1 and @param2
         and a.fuente != 'whatsapp'
       ORDER BY
         a.fecha DESC
     `;
-    const params = [`${startDate}%`];
+    const params = [startDate, endDate];
     console.log('Executing query with params:', params);
 
     const result = await executeQuery<attendantStatus[]>(query, params);
