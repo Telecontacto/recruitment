@@ -1,9 +1,43 @@
 import { Card } from './card-ui';
+import { useEffect, useState } from 'react';
+import { CardsSkeleton } from '@/app/ui/skeletons';
+import { fetchCardData } from '@/app/api/queryHandle/fetchApi';
 
-export default function CardWrapper({ data }: { data: any[] }) {
+export default function CardWrapper({ startDate, endDate }: { startDate: string, endDate: string }) {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const cardNames = ['Facebook', 'Indeed', 'Instagram', 'LinkedIn', 'Web', 'ZipRecruiter', 'Perfil'];
 
-  if (!Array.isArray(data)) {
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetchCardData(startDate, endDate);
+        console.log('Response:', response);
+        setData(response);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate]);
+
+  if (loading) {
+    return <div>
+      <div className="bg-gray-200 p-4 rounded-md">
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-white">Total Applications Received</h1>
+      </div>
+      <CardsSkeleton />
+    </div>;
+  }
+
+  if (!Array.isArray(data) || data.length === 0) {
     return renderEmptyCards(cardNames);
   }
 

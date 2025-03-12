@@ -1,21 +1,18 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+interface DateSelectorProps {
+    onDateChange: (startDate: string, endDate: string) => void;
+    selectedDate: {
+        startDate: string;
+        endDate: string;
+    };
+}
 
-export default function DateSelector() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+export default function DateSelector({ onDateChange, selectedDate }: DateSelectorProps) {
     const today = new Date().toISOString().split('T')[0];
 
-    const startDate = searchParams.get('startDate') || today;
-    const endDate = searchParams.get('endDate') || today;
-
-    const handleDateChange = (start: string, end: string) => {
-        const params = new URLSearchParams();
-        params.set('startDate', start);
-        params.set('endDate', end);
-        router.push(`?${params.toString()}`);
-    };
+    const startDate = selectedDate.startDate || today;
+    const endDate = selectedDate.endDate || today;
 
     return (
         <div className="flex gap-4">
@@ -24,7 +21,7 @@ export default function DateSelector() {
                 <input
                     type="date"
                     value={startDate}
-                    onChange={(e) => handleDateChange(e.target.value, endDate)}
+                    onChange={(e) => onDateChange(e.target.value, endDate)}
                     className="rounded-md border p-2 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600 calendar-input"
                 />
             </div>
@@ -34,7 +31,7 @@ export default function DateSelector() {
                     type="date"
                     value={endDate}
                     min={startDate}
-                    onChange={(e) => handleDateChange(startDate, e.target.value)}
+                    onChange={(e) => onDateChange(startDate, e.target.value)}
                     className="rounded-md border p-2 text-gray-700 dark:text-white dark:bg-gray-800 dark:border-gray-600 calendar-input"
                 />
             </div>
