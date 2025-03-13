@@ -19,7 +19,7 @@ export default function ViewApplicantWrapper({
     applicantData: any;
     session: any;
 }) {
-    console.log(applicantData);
+    console.log(session);
     return (
         <main className={montserrat.className}>
             <div className="flex justify-between items-center mb-8">
@@ -30,7 +30,7 @@ export default function ViewApplicantWrapper({
                     ]}
                 />
                 <div className="flex items-center gap-4">
-                    {session?.user?.role === 1 && (
+                    {session?.user?.role === "admin" && (
                         <EditApplicationForm
                             id={Number(id)}
                             interviewer={applicantData[0].entrevistador}

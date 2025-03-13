@@ -10,22 +10,31 @@ import clsx from 'clsx';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { getTranslation } from '@/app/translations';
 import React from 'react';
+import { Session } from 'next-auth';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'navDash', href: '/dashboard', icon: HomeIcon },
-  { name: 'navPipeline', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon },
-  { name: 'navCalendar', href: '/dashboard/calendar', icon: CalendarIcon },
+  { name: 'navDash', href: '/dashboard', icon: HomeIcon, roles: ['admin', 'user'] },
+  { name: 'navPipeline', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon, roles: ['admin', 'user'] },
+  { name: 'navCalendar', href: '/dashboard/calendar', icon: CalendarIcon, roles: ['admin'] },
 ];
 
-export default function NavLinks() {
+export default function NavLinks({ session }: { session: Session | null }) {
   const pathname = usePathname();
   const { language } = useLanguage();
 
+  console.log(session);
+
+  // Filter links based on the user's role.
+  const filteredLinks = links.filter((link) => {
+    if (!session) return false;
+    return link.roles.includes(session.user.role);
+  });
+
   return (
     <>
-      {links.map((link) => {
+      {filteredLinks.map((link) => {
         const LinkIcon = link.icon;
         return (
           <Link

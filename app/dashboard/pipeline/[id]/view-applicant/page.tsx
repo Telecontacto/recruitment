@@ -1,7 +1,7 @@
 import { fetchApplicant } from '@/app/api/queryHandle/fetchApi';
 import ViewApplicantWrapper from '@/app/ui/pipeline/view-applicant-wrapper';
 import { Metadata } from 'next';
-import Session from '@/app/lib/session-data';
+import Session from '@/app/api/user-data/session-data';
 
 export const metadata: Metadata = {
   title: 'View Applicant',
