@@ -1,6 +1,6 @@
 export async function submitHandler(
   dateRange: { startDate: string, endDate: string },
-  endpoint: string
+  endpoint: string,
 ) {
   const baseUrl = typeof window === 'undefined' 
     ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 

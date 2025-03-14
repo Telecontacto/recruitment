@@ -38,6 +38,8 @@ export default function Form() {
     setIsLoading(true);
     setError(null);
 
+
+
     try {
       const data = await submitHandler({ startDate: start, endDate: end }, '/api');
       if (data) {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/app/lib/data-mssql';
 import { attendantStatus } from '@/app/lib/definitions';
+import Session from './user-data/session-data';
 
 export async function POST(request: Request) {
   console.log('API route started');
@@ -13,6 +14,14 @@ export async function POST(request: Request) {
       console.log('Error: Start date or end date is missing');
       return NextResponse.json({ error: 'Both start date and end date are required' }, { status: 400 });
     }
+    const session = await Session();
+    
+    if (!session?.user?.role) {
+      console.log('Error: User role is missing');
+      return NextResponse.json({ error: 'User role is required' }, { status: 400 });
+    }
+
+    const recruit = session?.user?.role === 'admin' ? '' : `AND a.entrevistador = '${session?.user?.name}'`;
 
     const query = `
       SELECT 
@@ -26,10 +35,12 @@ export async function POST(request: Request) {
       WHERE
         cast(a.fecha as date) between @param1 and @param2
         and a.fuente != 'whatsapp'
+        ${recruit}
       ORDER BY
         a.fecha DESC
     `;
     const params = [startDate, endDate];
+    console.log('Executing query:', query);
     console.log('Executing query with params:', params);
 
     const result = await executeQuery<attendantStatus[]>(query, params);

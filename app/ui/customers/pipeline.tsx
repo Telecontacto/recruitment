@@ -56,8 +56,7 @@ export function Pipeline({
                         >
                             <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
                                 <strong>
-                                    Name: {item.nombre} <br />
-                                    Campaign: {item.proyecto} <br />
+                                    Name: {item.nombre}
                                     {item.printed === "NO" && (
                                         <span className="text-red-500"> *</span>
                                     )}

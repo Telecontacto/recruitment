@@ -78,8 +78,8 @@ const CallCenterQuestions = ({
     }, [isSaving]);
 
     // Add this helper function at the top of your component
-    const compareValues = (value1: string | number | undefined, value2: string | number): boolean => {
-        if (value1 === undefined) return false;
+    const compareValues = (value1: string | number | null, value2: string | number): boolean => {
+        if (value1 === null) return false;
         return value1.toString() === value2.toString();
     };
 
