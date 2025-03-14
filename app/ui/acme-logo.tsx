@@ -9,6 +9,7 @@ export default function AcmeLogo() {
         width={500}
         height={760}
         alt="Telecontacto Logo"
+        unoptimized
       />
     </div>
   );

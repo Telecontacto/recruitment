@@ -19,7 +19,7 @@ export type StageData = {
   nombre: string;
   statussolicitud: string;
   printed: string;
-  proyecto: string;
+  entrevistador: string;
 };
 
 export type Stages = {

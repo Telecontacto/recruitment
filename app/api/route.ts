@@ -21,21 +21,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User role is required' }, { status: 400 });
     }
 
-    const recruit = session?.user?.role === 'admin' ? '' : `AND a.entrevistador = '${session?.user?.name}'`;
-
     const query = `
       SELECT 
         a.nombre,
         a.id,
         a.statussolicitud,
         a.printed,
-        a.proyecto
+        a.entrevistador
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
         cast(a.fecha as date) between @param1 and @param2
         and a.fuente != 'whatsapp'
-        ${recruit}
       ORDER BY
         a.fecha DESC
     `;

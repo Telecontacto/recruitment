@@ -11,25 +11,30 @@ import { PipelineSkeleton } from '@/app/ui/skeletons';
 
 export function Pipeline({
     title,
-    stageNumber, // Add this new prop
+    stageNumber,
     res,
     step,
     onDragStart,
     onDrop,
+    currentUser,
+    userRole,
 }: {
     title: string;
-    stageNumber: string; // Add this type
+    stageNumber: string;
     step: string;
     res: Array<{
         id: number;
         nombre: string;
         statussolicitud: string;
         printed: string;
-        proyecto: string;
+        entrevistador: string;
     }>;
     onDragStart: (item: any) => void;
     onDrop: (stage: string) => void;
+    currentUser: string;
+    userRole: string; // Add role for authorization
 }) {
+
     return (
         <>
             <div
@@ -39,31 +44,57 @@ export function Pipeline({
             >
                 <h2 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>{title}</h2>
                 <div className="applications">
-                    {res.map((item) => (
-                        <div
-                            key={item.id}
-                            draggable="true"
-                            className={clsx(
-                                'applicant',
-                                'bg-gray-50',
-                                {
-                                    'dark:bg-gray-600': item.statussolicitud !== '0' && item.statussolicitud !== '5',
-                                    'applicant-hired': item.statussolicitud === '5',
-                                    'applicant-rejected': item.statussolicitud === '0',
-                                }
-                            )}
-                            onDragStart={() => onDragStart(item)} // Start dragging
-                        >
-                            <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
-                                <strong>
-                                    Name: {item.nombre}
-                                    {item.printed === "NO" && (
-                                        <span className="text-red-500"> *</span>
-                                    )}
-                                </strong>
-                            </a>
-                        </div>
-                    ))}
+                    {res.map((item) => {
+                        // Check if user has permission to interact with this application
+                        const isAdmin = userRole === 'admin';
+                        const isAssigned = currentUser === item.entrevistador;
+                        const hasPermission = isAdmin || isAssigned;
+
+                        console.log('userRole:', userRole);
+
+                        return (
+                            <div
+                                key={item.id}
+                                draggable={hasPermission ? "true" : "false"}
+                                className={clsx(
+                                    'applicant',
+                                    'bg-gray-50',
+                                    {
+                                        'dark:bg-gray-600': item.statussolicitud !== '0' && item.statussolicitud !== '5',
+                                        'applicant-hired': item.statussolicitud === '5',
+                                        'applicant-rejected': item.statussolicitud === '0',
+                                        'cursor-not-allowed': !hasPermission,
+                                        'cursor-grab': hasPermission,
+                                        'opacity-70': !hasPermission && !isAdmin // Dim cards that user can't interact with
+                                    }
+                                )}
+                                onDragStart={() => hasPermission && onDragStart(item)} // Only allow drag if authorized
+                            >
+                                {hasPermission ? (
+                                    <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
+                                        <strong>
+                                            Name: {item.nombre} <br />
+                                            Interviewer: {item.entrevistador} <br />
+                                            {item.printed === "NO" && (
+                                                <span className="text-red-500"> *</span>
+                                            )}
+                                        </strong>
+                                    </a>
+                                ) : (
+                                    // No link for unauthorized users
+                                    <div className="pointer-events-none">
+                                        <strong>
+                                            Name: {item.nombre} <br />
+                                            Interviewer: {item.entrevistador} <br />
+                                            {item.printed === "NO" && (
+                                                <span className="text-red-500"> *</span>
+                                            )}
+                                        </strong>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </>
@@ -83,9 +114,11 @@ export function BlankPipeline({
 }
 
 export function Pipelines({
-    results
+    results,
+    session
 }: {
-    results: any
+    results: any,
+    session: any
 },
 ) {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -107,9 +140,6 @@ export function Pipelines({
     const [ModalMessage, setModalMessage] = useState('')
     const [ModalColor, setModalColor] = useState('')
 
-    const [data, setData] = useState(results);
-
-    console.log('results:', results);
 
     useEffect(() => {
         if (results) {
@@ -182,7 +212,7 @@ export function Pipelines({
             "Hired/Rejected": [],
         };
 
-        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, proyecto: string; }) => {
+        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string; }) => {
             switch (item.statussolicitud) {
                 case "1":
                     updatedStages.Received.push(item);
@@ -280,7 +310,7 @@ export function Pipelines({
                 "Hired/Rejected": [],
             };
 
-            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, proyecto: string; }) => {
+            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string; }) => {
                 switch (item.statussolicitud.toLowerCase()) {
                     case "1":
                         updatedStages.Received.push(item);
@@ -353,6 +383,8 @@ export function Pipelines({
                     step="view-applicant"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
+                    currentUser={session?.user?.name}
+                    userRole={session?.user?.role}
                 />
                 <Pipeline
                     title="In Review"
@@ -361,6 +393,8 @@ export function Pipelines({
                     step="review-applicant"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
+                    currentUser={session?.user?.name}
+                    userRole={session}
                 />
                 <Pipeline
                     title="Interview"
@@ -369,6 +403,8 @@ export function Pipelines({
                     step="interview-applicant"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
+                    currentUser={session?.user?.name}
+                    userRole={session}
                 />
                 <Pipeline
                     title="Offered"
@@ -377,6 +413,8 @@ export function Pipelines({
                     step="view_empleo"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
+                    currentUser={session?.user?.name}
+                    userRole={session}
                 />
                 <Pipeline
                     title="Hired/Rejected"
@@ -385,6 +423,8 @@ export function Pipelines({
                     step="view_empleo"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
+                    currentUser={session?.user?.name}
+                    userRole={session}
                 />
             </div>
             <Modal isOpen={isModalOpen} color={ModalColor} message={ModalMessage} />

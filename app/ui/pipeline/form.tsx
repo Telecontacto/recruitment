@@ -15,11 +15,18 @@ const getYesterday = () => {
   return yesterday.toISOString().split('T')[0];
 };
 
-const yesterday = getYesterday();
+const getweekAgo = () => {
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  return weekAgo.toISOString().split('T')[0];
+}
 
-export default function Form() {
+const yesterday = getYesterday();
+const weekAgo = getweekAgo();
+
+export default function Form({ session }: { session: any }) {
   const [results, setResults] = useState<any>(null);
-  const [startDate, setStartDate] = useState(yesterday);
+  const [startDate, setStartDate] = useState(weekAgo);
   const [endDate, setEndDate] = useState(yesterday);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,8 +44,6 @@ export default function Form() {
   const handleSubmit = async (start: string, end: string) => {
     setIsLoading(true);
     setError(null);
-
-
 
     try {
       const data = await submitHandler({ startDate: start, endDate: end }, '/api');
@@ -157,7 +162,10 @@ export default function Form() {
           <BlankPipeline title='Hired/Rejected' />
         </div>
       ) : (
-        <Pipelines results={results} />
+        <Pipelines
+          results={results}
+          session={session}
+        />
       )}
       <CreateApplicantModal
         isOpen={isCreateModalOpen}
