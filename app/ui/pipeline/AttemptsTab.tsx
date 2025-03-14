@@ -71,15 +71,57 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     // Add this new function to handle copy
     const handleCopyLink = () => {
         const link = `https://reports.telecontacto.com/reclutamiento/Solicitud_Empleo_w.php?ID=${initialData.solicitorId}`;
-        navigator.clipboard.writeText(link)
-            .then(() => {
+
+        // Check if Clipboard API is available
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(link)
+                .then(() => {
+                    setCopyFeedback('Link copied!');
+                    setTimeout(() => setCopyFeedback(''), 2000); // Clear feedback after 2 seconds
+                })
+                .catch(() => {
+                    // Fall back to textarea method if Clipboard API fails
+                    copyWithFallback(link);
+                });
+        } else {
+            // Use fallback method if Clipboard API is not available
+            copyWithFallback(link);
+        }
+    };
+
+    // Fallback copy method using textarea
+    const copyWithFallback = (text: string) => {
+        try {
+            // Create temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+
+            // Make the textarea out of viewport
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-999999px';
+            textarea.style.top = '-999999px';
+            document.body.appendChild(textarea);
+
+            // Select and copy text
+            textarea.focus();
+            textarea.select();
+            const successful = document.execCommand('copy');
+
+            // Remove the temporary element
+            document.body.removeChild(textarea);
+
+            // Show feedback
+            if (successful) {
                 setCopyFeedback('Link copied!');
-                setTimeout(() => setCopyFeedback(''), 2000); // Clear feedback after 2 seconds
-            })
-            .catch(() => {
+            } else {
                 setCopyFeedback('Failed to copy');
-                setTimeout(() => setCopyFeedback(''), 2000);
-            });
+            }
+            setTimeout(() => setCopyFeedback(''), 2000);
+        } catch (err) {
+            setCopyFeedback('Failed to copy');
+            setTimeout(() => setCopyFeedback(''), 2000);
+            console.error('Failed to copy text: ', err);
+        }
     };
 
     async function handleAttemptChange(index: number, field: string, value: string): Promise<void> {
