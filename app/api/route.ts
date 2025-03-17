@@ -32,7 +32,6 @@ export async function POST(request: Request) {
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
         cast(a.fecha as date) between @param1 and @param2
-        and a.fuente != 'whatsapp'
       ORDER BY
         a.fecha DESC
     `;
