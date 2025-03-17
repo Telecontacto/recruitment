@@ -170,6 +170,7 @@ export default function Form({ session }: { session: any }) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={handleCreateApplicant}
+        user={session?.user?.name}
       />
       <Modal
         isOpen={isModalOpen}

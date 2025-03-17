@@ -3,6 +3,7 @@ import { ModalProps, DeleteModalProps, HRModalProps, CreateApplicantModalProps }
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { montserrat } from '@/app/ui/fonts'
+import { assignRecruiter } from "@/app/api/queryHandle/fetchApi";
 
 export default function Modal({ isOpen, color, message }: ModalProps) {
     const [isVisible, setIsVisible] = useState(false);
@@ -143,7 +144,7 @@ export function HireRejectedModal({ isOpen, onClose, validateAnswer }: HRModalPr
     );
 }
 
-export function CreateApplicantModal({ isOpen, onClose, onSubmit }: CreateApplicantModalProps) {
+export function CreateApplicantModal({ isOpen, onClose, onSubmit, user }: CreateApplicantModalProps) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -151,7 +152,8 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit }: CreateApplic
         source: '',
         stage: '2',
         document: null as File | null,
-        documentPath: ''
+        documentPath: '',
+        assignRecruiter: user,
     });
     const [isUploading, setIsUploading] = useState(false);
 
@@ -260,6 +262,7 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit }: CreateApplic
                                             value={formData.source}
                                             onChange={(e) => setFormData({ ...formData, source: e.target.value })}
                                         >
+                                            <option value="">Select an option</option>
                                             <option value="meta">Facebook/Instagram</option>
                                             <option value="indeed">Indeed</option>
                                             <option value="empleos">Employment (Inbox)</option>

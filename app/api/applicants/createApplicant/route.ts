@@ -5,10 +5,10 @@ export async function POST(request: Request) {
   try {
     console.log('Starting POST request processing...');
     const data = await request.json();
-    const { name, phone, email, stage, source, document, documentId } = data;
+    const { name, phone, email, stage, source, assignRecruiter, document, documentId } = data;
     const date = new Date();
 
-    console.log('Validated data:', { name, phone, email, stage, source, document, documentId });
+    console.log('Validated data:', { name, phone, email, stage, source, assignRecruiter, document, documentId });
 
     if (!name || !phone || !email || !source || !document) {
       console.log('Validation failed: Missing required fields');
@@ -21,12 +21,12 @@ export async function POST(request: Request) {
     // First query - Insert applicant and get ID
     console.log('Attempting to insert applicant...');
     const applicantQuery = `
-      INSERT INTO RECLUTAMIENTO_SOLICITUDES (Nombre, Celular, Fecha, Email, StatusSolicitud, fuente, nombreDocumento)
+      INSERT INTO RECLUTAMIENTO_SOLICITUDES (Nombre, Celular, Fecha, Email, StatusSolicitud, entrevistador, fuente, nombreDocumento)
       OUTPUT inserted.ID
-      VALUES (@param1, @param2, @param3, @param4, @param5, @param6, @param7)
+      VALUES (@param1, @param2, @param3, @param4, @param5, @param6, @param7, @param8)
     `;
 
-    const applicantParams = [name, phone, date, email, stage, source, resume];
+    const applicantParams = [name, phone, date, email, stage, assignRecruiter, source, resume];
     console.log('Applicant query params:', applicantParams);
     const applicantResult = await insertQuery<any[]>(applicantQuery, applicantParams);
     console.log('Applicant insert result:', applicantResult);

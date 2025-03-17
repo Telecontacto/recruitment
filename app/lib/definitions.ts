@@ -148,4 +148,5 @@ export interface CreateApplicantModalProps {
     phone: string;
     stage: string;
   }) => void;
+  user: string;
 }

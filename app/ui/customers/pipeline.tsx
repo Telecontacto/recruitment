@@ -50,11 +50,6 @@ export function Pipeline({
                         const isAssigned = currentUser === item.entrevistador;
                         const hasPermission = isAdmin || isAssigned;
 
-                        console.log('userRole:', userRole);
-                        console.log('currentUser:', currentUser);
-                        console.log('isAdmin:', isAdmin);
-                        console.log('hasPermission:', hasPermission);
-
                         return (
                             <div
                                 key={item.id}

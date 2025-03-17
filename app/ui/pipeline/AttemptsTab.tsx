@@ -89,22 +89,45 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
         }
     };
 
-    // Fallback copy method using textarea
+    // Enhanced fallback copy method using textarea
     const copyWithFallback = (text: string) => {
         try {
             // Create temporary textarea element
             const textarea = document.createElement('textarea');
             textarea.value = text;
 
-            // Make the textarea out of viewport
+            // Make the textarea out of viewport but ensure it's part of the DOM flow
             textarea.style.position = 'fixed';
             textarea.style.left = '-999999px';
             textarea.style.top = '-999999px';
+            textarea.style.opacity = '0';
+            textarea.style.zIndex = '-1';
+
+            // Ensure it's visible to screen readers and selectable
+            textarea.setAttribute('readonly', ''); // Prevent mobile keyboard from appearing
+
             document.body.appendChild(textarea);
 
-            // Select and copy text
-            textarea.focus();
-            textarea.select();
+            // Special handling for iOS devices
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                // iOS requires different selection approach
+                const range = document.createRange();
+                range.selectNodeContents(textarea);
+
+                const selection = window.getSelection();
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                textarea.setSelectionRange(0, text.length); // For mobile devices
+            } else {
+                // Standard selection for other devices
+                textarea.focus();
+                textarea.select();
+            }
+
+            // Try to execute the copy command
             const successful = document.execCommand('copy');
 
             // Remove the temporary element
@@ -114,11 +137,15 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
             if (successful) {
                 setCopyFeedback('Link copied!');
             } else {
-                setCopyFeedback('Failed to copy');
+                // If execCommand fails, provide user instructions
+                setCopyFeedback('Please press Ctrl+C to copy');
+                alert(`Please copy this link manually: ${text}`);
             }
             setTimeout(() => setCopyFeedback(''), 2000);
         } catch (err) {
             setCopyFeedback('Failed to copy');
+            // Provide the link for manual copying
+            alert(`Please copy this link manually: ${text}`);
             setTimeout(() => setCopyFeedback(''), 2000);
             console.error('Failed to copy text: ', err);
         }
@@ -214,7 +241,8 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                     { value: '', label: 'Select reason' },
                     { value: 'scheduled_interview', label: 'Scheduled Interview' },
                     { value: 'will_call_back', label: 'Will Call Back' },
-                    { value: 'not_interested', label: 'Not Interested' }
+                    { value: 'not_interested', label: 'Not Interested' },
+                    { value: 'hang_up', label: 'Hung Up' },
                 ];
             case 'no_answer':
                 return [
@@ -365,6 +393,8 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                                     <option value="over_qualified">Over Qualified</option>
                                     <option value="not_flow_interview">Did Not Flow in the Interview</option>
                                     <option value="not_live_pr">Does Not Live in PR</option>
+                                    <option value="multiple_trips">Multiple trips</option>
+                                    <option value="trip_close_onboarding">Trip close to Onboarding</option>
                                     <option value="no_response">Hung Up / Does Not Answer</option>
                                     <option value="no_show">Did Not Arrive to Onboarding / Interview (Multiple Opportunities)</option>
                                     <option value="no_consistency">No Consistency in Employments</option>

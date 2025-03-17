@@ -46,7 +46,7 @@ export default function ViewApplication({
 }: {
     data: any;
 }) {
-    console.log(data)
+    //console.log(data)
     const availabilityWeek: any[] = [{
         "Monday": `${data[0].LunesDesde} - ${data[0].LunesHasta}`,
         "Tuesday": `${data[0].MartesDesde} - ${data[0].MartesHasta}`,
@@ -899,7 +899,10 @@ export default function ViewApplication({
                                     <div className="space-y-4">
                                         {isPDF(data[0].nombreDocumento) ? (
                                             <iframe
-                                                src={`https://reports.telecontacto.com/reclutamiento/resume/${data[0].ID}-${data[0].nombreDocumento}`}
+                                                src={`https://reports.telecontacto.com/reclutamiento/resume/${data[0].nombreDocumento.startsWith(data[0].ID)
+                                                    ? `${data[0].ID}-${data[0].nombreDocumento}`
+                                                    : data[0].nombreDocumento
+                                                    }`}
                                                 className="w-full h-[600px] border-2 border-gray-300 rounded-lg"
                                                 title="Document Preview"
                                             />

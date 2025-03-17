@@ -2,7 +2,8 @@
 import {
   HomeIcon,
   DocumentDuplicateIcon,
-  CalendarIcon
+  CalendarIcon,
+  FlagIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -18,6 +19,7 @@ const links = [
   { name: 'navDash', href: '/dashboard', icon: HomeIcon, roles: ['admin', 'user'] },
   { name: 'navPipeline', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon, roles: ['admin', 'user'] },
   { name: 'navCalendar', href: '/dashboard/calendar', icon: CalendarIcon, roles: ['admin'] },
+  { name: 'navReport', href: '/dashboard/report', icon: FlagIcon, roles: ['admin'] },
 ];
 
 export default function NavLinks({ session }: { session: Session | null }) {
