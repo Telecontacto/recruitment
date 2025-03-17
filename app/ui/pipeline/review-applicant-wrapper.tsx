@@ -2,7 +2,7 @@
 import Breadcrumbs from '@/app/ui/pipeline/breadcrumbs';
 import StageSelector from '@/app/ui/pipeline/stage-selector';
 import CloseButton from '@/app/ui/pipeline/close-button';
-import ViewApplication from '@/app/ui/pipeline/review-tabs';
+import ReviewApplication from '@/app/ui/pipeline/review-tabs';
 import { montserrat } from '@/app/ui/fonts';
 import EditApplicationForm from '@/app/ui/pipeline/edit-form'
 
@@ -19,7 +19,6 @@ export default function ViewApplicantWrapper({
     applicantData: any;
     session: any;
 }) {
-    console.log(applicantData);
     return (
         <main className={montserrat.className}>
             <div className="flex justify-between items-center mb-8">
@@ -45,7 +44,7 @@ export default function ViewApplicantWrapper({
                     <CloseButton />
                 </div>
             </div>
-            <ViewApplication data={applicantData} />
+            <ReviewApplication data={applicantData} />
         </main>
     );
 }

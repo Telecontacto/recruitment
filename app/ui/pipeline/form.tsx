@@ -9,9 +9,8 @@ import Modal, { CreateApplicantModal } from '@/app/ui/pipeline/modal';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 // Get yesterday's date in YYYY-MM-DD format
-const getYesterday = () => {
+const getToday = () => {
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
   return yesterday.toISOString().split('T')[0];
 };
 
@@ -21,7 +20,7 @@ const getweekAgo = () => {
   return weekAgo.toISOString().split('T')[0];
 }
 
-const yesterday = getYesterday();
+const yesterday = getToday();
 const weekAgo = getweekAgo();
 
 export default function Form({ session }: { session: any }) {

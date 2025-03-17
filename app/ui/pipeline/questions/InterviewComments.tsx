@@ -64,19 +64,25 @@ const InterviewComments = ({ data, onChange }: { data: any, onChange: (e: Change
                 </div>
                 <div className='grid grid-cols-2 gap-2'>
                     <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Interviewer:</label>
                         <input
                             type="text"
-                            readOnly
-                            value={`Interviewer: ${data.firstInterviewName || ''}`}
-                            className="mt-2 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            name="firstInterviewName"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.firstInterviewName || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
                     <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Date:</label>
                         <input
                             type="text"
-                            readOnly
-                            value={`Date: ${data.firstInterviewDate || ''}`}
-                            className="mt-2 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            name="firstInterviewDate"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.firstInterviewDate || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
                 </div>
@@ -97,19 +103,25 @@ const InterviewComments = ({ data, onChange }: { data: any, onChange: (e: Change
                 </div>
                 <div className='grid grid-cols-2 gap-2'>
                     <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Interviewer:</label>
                         <input
                             type="text"
-                            readOnly
-                            value={`Interviewer: ${data.secondInterviewName || ''}`}
-                            className="mt-2 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            name="secondInterviewName"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.secondInterviewName || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
                     <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Date:</label>
                         <input
                             type="text"
-                            readOnly
-                            value={`Date: ${data.secondInterviewDate || ''}`}
-                            className="mt-2 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            name="secondInterviewDate"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.secondInterviewDate || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
                 </div>
