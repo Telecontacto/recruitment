@@ -51,6 +51,9 @@ export function Pipeline({
                         const hasPermission = isAdmin || isAssigned;
 
                         console.log('userRole:', userRole);
+                        console.log('currentUser:', currentUser);
+                        console.log('isAdmin:', isAdmin);
+                        console.log('hasPermission:', hasPermission);
 
                         return (
                             <div
@@ -394,7 +397,7 @@ export function Pipelines({
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
-                    userRole={session}
+                    userRole={session?.user?.role}
                 />
                 <Pipeline
                     title="Interview"
@@ -404,7 +407,7 @@ export function Pipelines({
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
-                    userRole={session}
+                    userRole={session?.user?.role}
                 />
                 <Pipeline
                     title="Offered"
@@ -414,7 +417,7 @@ export function Pipelines({
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
-                    userRole={session}
+                    userRole={session?.user?.role}
                 />
                 <Pipeline
                     title="Hired/Rejected"
@@ -424,7 +427,7 @@ export function Pipelines({
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
-                    userRole={session}
+                    userRole={session?.user?.role}
                 />
             </div>
             <Modal isOpen={isModalOpen} color={ModalColor} message={ModalMessage} />
