@@ -73,14 +73,6 @@ export default function LoginForm() {
             </>
           )}
         </div>
-        <div className='flex p-6'>
-          <Image
-            src="/godaddy.gif"
-            width={500}
-            height={560}
-            alt="Telecontacto Logo"
-          />
-        </div>
       </div>
     </form>
   );
