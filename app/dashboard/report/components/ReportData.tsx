@@ -18,10 +18,7 @@ export default async function ReportData({
     }
 
     // Fetch data based on date range
-    const reportData = await fetchReportData(
-        searchParams.startDate,
-        searchParams.endDate
-    );
+    const reportData = await fetchReportData();
 
     // Handle case when no data is found
     if (reportData.length === 0) {

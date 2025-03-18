@@ -19,7 +19,6 @@ export default function ViewApplicantWrapper({
     applicantData: any;
     session: any;
 }) {
-    console.log(session);
     return (
         <main className={montserrat.className}>
             <div className="flex justify-between items-center mb-8">

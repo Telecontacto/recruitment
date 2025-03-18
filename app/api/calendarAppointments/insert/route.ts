@@ -9,6 +9,7 @@ export async function POST(request: Request) {
     const date = searchParams.get('date'); // Get the `date` parameter
     const time = searchParams.get('time'); // Get the `time` parameter
     const id = searchParams.get('id'); // Get the `id` parameter
+    const recruiter = searchParams.get('recruiter'); // Get the `recruiter` parameter
 
     if (!name || !phone || !date || !time || !id) {
       return NextResponse.json({ error: 'Name, phone, date, time, and id are required.' }, { status: 400 });
@@ -17,12 +18,12 @@ export async function POST(request: Request) {
     console.log(`Inserting calendar appointment for ${date} at ${time}`);
 
     const query = `
-      INSERT INTO CITAS (NombreCitado, Telefono, Fecha, Hora, solicitorId)
+      INSERT INTO CITAS (NombreCitado, Telefono, Fecha, Hora, solicitorId, CitadoA)
       OUTPUT inserted.ID
-      VALUES (@param1, @param2, @param3, @param4, @param5)
+      VALUES (@param1, @param2, @param3, @param4, @param5, @param6);
     `;
 
-    const params = [name, phone, date, time, id];
+    const params = [name, phone, date, time, id, recruiter];
 
     const result = await insertQuery<any[]>(query, params);
 

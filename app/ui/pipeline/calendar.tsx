@@ -18,6 +18,7 @@ interface calendarProps {
     id: number;
     onUpdateInfo: (newInfo: any) => void;
     onUpdateSuccess: (message: string) => void;
+    recruiter: string;
 }
 
 const Calendar: React.FC<calendarProps> = ({
@@ -25,7 +26,8 @@ const Calendar: React.FC<calendarProps> = ({
     phone,
     id,
     onUpdateInfo,
-    onUpdateSuccess
+    onUpdateSuccess,
+    recruiter
 }) => {
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -95,7 +97,7 @@ const Calendar: React.FC<calendarProps> = ({
             };
 
             try {
-                let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, id);
+                let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, recruiter, id);
                 if (msg) {
                     setEvents([...events, newEvent]);
                     onUpdateSuccess('Appointment set successfully');
@@ -209,7 +211,7 @@ const Calendar: React.FC<calendarProps> = ({
                         <ul className="list-none">
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
-                                const isFull = eventsInTimeSlot.length >= 2;
+                                const isFull = eventsInTimeSlot.length >= 10;
                                 const hasAppointment = hasAppointmentInTimeSlot(selectedDate, time);
 
                                 return (

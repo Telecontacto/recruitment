@@ -53,8 +53,10 @@ function a11yProps(index: number) {
 
 export default function ReviewApplication({
     data,
+    user
 }: {
     data: any;
+    user: string;
 }) {
     const [info, setInfo] = useState(data[0]);
     const [ModalMessage, setModalMessage] = useState('');
@@ -146,6 +148,7 @@ export default function ReviewApplication({
                                 id={info.solicitorId}
                                 onUpdateInfo={updateInfo}
                                 onUpdateSuccess={handleModalUpdate}
+                                recruiter={user}
                             />
                         </div>
                     </CustomTabPanel>

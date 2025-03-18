@@ -403,6 +403,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                                     <option value="duplicate">Duplicate</option>
                                     <option value="worked_before_nq">Already Worked With Us (NQ)</option>
                                     <option value="multiple_attempts">Multiple Attempts</option>
+                                    <option value="currently_with_us">Currently is an empolyee of Telecontacto</option>
                                 </select>
                             </div>
                         )}

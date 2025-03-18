@@ -78,6 +78,7 @@ export const insertCalendarAppointment = async (
   phone: string,
   date: string,
   time: string,
+  recruiter: string,
   id: number
 ): Promise<any> => {
   try {
@@ -85,7 +86,7 @@ export const insertCalendarAppointment = async (
     ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
     : '';
 
-    const response = await fetch(`${baseUrl}/api/calendarAppointments/insert?name=${name}&phone=${phone}&date=${date}&time=${time}&id=${id}`, {
+    const response = await fetch(`${baseUrl}/api/calendarAppointments/insert?name=${name}&phone=${phone}&date=${date}&time=${time}&recruiter=${recruiter}&id=${id}`, {
       method: 'POST',
     });
 
@@ -425,50 +426,28 @@ export async function addApplicant(data: any): Promise<any> {
   }
 }
 
-type ReportDataItem = {
-  date: string;
-  metric: string;
-  value: number;
-  // Add more properties as needed
-};
-
-export async function fetchReportData(startDate: string, endDate: string): Promise<ReportDataItem[]> {
-  // In a real application, this would be a call to your database or API
-  // For now, we'll return mock data
-  
+export async function fetchReportData(): Promise<any> {
   try {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Generate mock data based on date range
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const data: ReportDataItem[] = [];
-    
-    // Create a data point for each day in range
-    const currentDate = new Date(start);
-    while (currentDate <= end) {
-      data.push({
-        date: currentDate.toISOString().split('T')[0],
-        metric: 'Sales',
-        value: Math.floor(Math.random() * 1000),
-      });
-      
-      data.push({
-        date: currentDate.toISOString().split('T')[0],
-        metric: 'Visitors',
-        value: Math.floor(Math.random() * 5000),
-      });
-      
-      // Move to next day
-      currentDate.setDate(currentDate.getDate() + 1);
+    const baseUrl = typeof window === 'undefined' 
+    ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+    : '';
+
+    const returnData = [];
+
+    const response = await fetch(
+      `${baseUrl}/api/reports`,
+      { method: 'GET' }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
     }
-    
+
+    const data = await response.json();
     return data;
-    
   } catch (error) {
-    console.error('Failed to fetch report data:', error);
-    throw new Error('Failed to fetch report data');
+    console.error('Error fetching data:', error);
+    throw error;
   }
 }
 

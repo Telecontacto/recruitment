@@ -145,7 +145,7 @@ export function HireRejectedModal({ isOpen, onClose, validateAnswer }: HRModalPr
 }
 
 export function CreateApplicantModal({ isOpen, onClose, onSubmit, user }: CreateApplicantModalProps) {
-    const [formData, setFormData] = useState({
+    const initialFormState = {
         name: '',
         email: '',
         phone: '',
@@ -154,8 +154,25 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit, user }: Create
         document: null as File | null,
         documentPath: '',
         assignRecruiter: user,
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
     const [isUploading, setIsUploading] = useState(false);
+
+    // Reset form when modal opens/closes
+    useEffect(() => {
+        if (!isOpen) {
+            resetForm();
+        }
+    }, [isOpen, user]);
+
+    // Function to reset form data
+    const resetForm = () => {
+        setFormData({
+            ...initialFormState,
+            assignRecruiter: user, // Keep the current user
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -192,9 +209,11 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit, user }: Create
                 };
 
                 onSubmit(submitData);
+
             } else {
                 onSubmit(formData);
             }
+            resetForm(); // Reset form after successful submission
             onClose();
         } catch (error) {
             console.error('Error uploading file:', error);
