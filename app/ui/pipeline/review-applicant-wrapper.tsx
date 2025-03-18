@@ -28,12 +28,12 @@ export default function ViewApplicantWrapper({
                         { label: applicant, href: `/dashboard/pipeline/${id}/review-applicant`, active: true },
                     ]}
                 />
-                {/* {session?.user?.role === "admin" && (
+                {session?.user?.role === "admin" && (
                     <EditApplicationForm
                         id={Number(id)}
                         interviewer={applicantData[0].entrevistador}
                     />
-                )} */}
+                )}
                 <div className="flex items-center gap-4">
                     <StageSelector
                         currentStage="review"
