@@ -123,6 +123,8 @@ export function Pipelines({
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isHRModalOpen, setHRModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [interviewerFilter, setInterviewerFilter] = useState(''); // New state for interviewer filter
+    const [uniqueInterviewers, setUniqueInterviewers] = useState<string[]>([]); // State to track unique interviewers
     const [filteredResults, setFilteredResults] = useState(results);
     const closeDeleteModal = () => setModalOpen(false);
     const closeHRModal = () => setModalOpen(false);
@@ -138,19 +140,36 @@ export function Pipelines({
     const [ModalMessage, setModalMessage] = useState('')
     const [ModalColor, setModalColor] = useState('')
 
+    // Extract unique interviewers from results
+    useEffect(() => {
+        if (results) {
+            const interviewers = results
+                .map((item: any) => item.entrevistador)
+                .filter((value: string, index: number, self: string[]) =>
+                    value && self.indexOf(value) === index)
+                .sort();
+            setUniqueInterviewers(interviewers);
+        }
+    }, [results]);
 
     useEffect(() => {
         if (results) {
-            const filtered = results.filter((item: any) =>
-                item.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const filtered = results.filter((item: any) => {
+                const nameMatch = item.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+                const interviewerMatch = !interviewerFilter || item.entrevistador === interviewerFilter;
+                return nameMatch && interviewerMatch;
+            });
             setFilteredResults(filtered);
             loadData(filtered);
         }
-    }, [results, searchTerm]);
+    }, [results, searchTerm, interviewerFilter]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
+    };
+
+    const handleInterviewerFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setInterviewerFilter(e.target.value);
     };
 
     const handleDragStart = (item: any) => {
@@ -350,20 +369,42 @@ export function Pipelines({
 
     return (
         <>
-            <div className="mb-4 flex items-center gap-2 justify-center">
-                <label htmlFor="search" className="block text-sm font-medium text-lg">
-                    Search by name
-                </label>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder='Search...'
-                        id='search'
-                        name='search'
-                        value={searchTerm}
-                        onChange={handleSearch}
-                        className="rounded-md border border-gray-300 p-2 pl-10 bg-white text-black dark:bg-gray-800 dark:text-white"
-                    />
+            <div className="mb-4 flex items-center gap-4 justify-center flex-wrap">
+                <div className="flex items-center gap-2">
+                    <label htmlFor="search" className="block text-sm font-medium text-lg">
+                        Search by name
+                    </label>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder='Search...'
+                            id='search'
+                            name='search'
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            className="rounded-md border border-gray-300 p-2 pl-10 bg-white text-black dark:bg-gray-800 dark:text-white"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <label htmlFor="interviewer" className="block text-sm font-medium text-lg">
+                        Filter by interviewer
+                    </label>
+                    <select
+                        id="interviewer"
+                        name="interviewer"
+                        value={interviewerFilter}
+                        onChange={handleInterviewerFilter}
+                        className="rounded-md border border-gray-300 p-2 bg-white text-black dark:bg-gray-800 dark:text-white"
+                    >
+                        <option value="">All Interviewers</option>
+                        {uniqueInterviewers.map((interviewer) => (
+                            <option key={interviewer} value={interviewer}>
+                                {interviewer}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
             <div className="stages text-center bg-gray-200">
@@ -418,7 +459,7 @@ export function Pipelines({
                     title="Hired/Rejected"
                     stageNumber="5"
                     res={stages["Hired/Rejected"]}
-                    step="view_empleo"
+                    step="view_print"
                     onDragStart={handleDragStart}
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}

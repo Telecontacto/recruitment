@@ -215,11 +215,11 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     }
 
     const isUnsuccessful = (attempt: Attempt) => {
-        return ['no_answer', 'wrong_number', 'voicemail'].includes(attempt.contacted);
+        return (attempt.contacted === 'no_answer') || (attempt.contacted === 'contacted' && ['will_call_back', 'hang_up'].includes(attempt.notes));
     };
 
     const isSuccessful = (attempt: Attempt) => {
-        return attempt.contacted === 'contacted';
+        return attempt.contacted === 'contacted' && ['scheduled_interview', 'not_interested'].includes(attempt.notes);
     };
 
     const shouldShowAttempt = (index: number) => {

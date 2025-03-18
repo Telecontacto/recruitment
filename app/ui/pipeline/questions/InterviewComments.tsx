@@ -50,6 +50,37 @@ const InterviewComments = ({ data, onChange }: { data: any, onChange: (e: Change
         <div className="rounded-md bg-gray-200 p-4 md:p-6 dark:bg-gray-800">
             <div className="mb-4">
                 <label className="mb-2 block text-lg font-medium">
+                    Test Scores
+                </label>
+                <div className='grid grid-cols-2 gap-2 mb-4'>
+                    <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">Typing Test Score:</label>
+                        <input
+                            type="text"
+                            name="typingScore"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.typingScore || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            placeholder="Enter score or WPM"
+                        />
+                    </div>
+                    <div className='relative'>
+                        <label className="text-sm text-gray-600 dark:text-gray-400">English Test Score:</label>
+                        <input
+                            type="text"
+                            name="englishScore"
+                            onChange={handleInputChange}
+                            onBlur={handleInputBlur}
+                            value={data.englishScore || ''}
+                            className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                            placeholder="Enter score"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="mb-4">
+                <label className="mb-2 block text-lg font-medium">
                     First Interview Comments
                 </label>
                 <div className="relative">

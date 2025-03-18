@@ -22,11 +22,13 @@ export async function PUT(request: Request) {
                 firstInterviewDate = @param3,
                 secondInterviewComments = @param4,
                 secondInterviewName = @param5,
-                secondInterviewDate = @param6
-            WHERE solicitorId = @param7;
+                secondInterviewDate = @param6,
+                englishScore = @param7,
+                typingScore = @param8
+            WHERE solicitorId = @param9;
             SELECT @@ROWCOUNT as affectedRows;
     `;
-    const params = [data.firstInterviewComments, data.firstInterviewName, data.firstInterviewDate, data.secondInterviewComments, data.secondIntereviewName, data.secondInterviewDate, data.solicitorId];
+    const params = [data.firstInterviewComments, data.firstInterviewName, data.firstInterviewDate, data.secondInterviewComments, data.secondIntereviewName, data.secondInterviewDate, data.englishScore, data.typingScore, data.solicitorId];
     console.log('Executing query with params:', params);
 
     const result = await executeQuery<any[]>(query, params);
