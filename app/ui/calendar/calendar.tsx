@@ -86,7 +86,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                 Hora: newEventTime,
             };
             setEvents([...events, newEvent]);
-            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, id); // Add id parameter
+            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, "assignRecruiter", id); // Add id parameter
             if (msg) {
                 setModalMessage('Appointment set successfully');
                 setModalColor('bg-green-500');
