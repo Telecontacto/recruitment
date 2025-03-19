@@ -8,17 +8,24 @@ export const metadata: Metadata = {
   title: 'Report Dashboard',
 };
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+// Helper functions for default dates
+function getDefaultStartDate() {
+  const date = new Date();
+  date.setDate(date.getDate() - 2);
+  return date.toISOString().split('T')[0];
+}
+
+function getDefaultEndDate() {
+  return new Date().toISOString().split('T')[0];
+}
+
+export default async function Page() {
   const session = await Session();
 
-  // Extract and type the search params we need
-  const typedSearchParams = {
-    startDate: typeof searchParams?.startDate === 'string' ? searchParams.startDate : undefined,
-    endDate: typeof searchParams?.endDate === 'string' ? searchParams.endDate : undefined
+  // Create default date params
+  const defaultParams = {
+    startDate: getDefaultStartDate(),
+    endDate: getDefaultEndDate()
   };
 
   return (
@@ -30,7 +37,7 @@ export default async function Page({
       </div>
 
       <Suspense fallback={<div className="text-center p-8">Loading report data...</div>}>
-        <ReportData searchParams={typedSearchParams} />
+        <ReportData searchParams={defaultParams} />
       </Suspense>
     </main>
   );

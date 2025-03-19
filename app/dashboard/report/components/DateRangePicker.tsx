@@ -7,6 +7,17 @@ export default function DateRangePicker() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
+    // Helper functions to get default dates
+    function getDefaultStartDate() {
+        const date = new Date();
+        date.setDate(date.getDate() - 2);
+        return date.toISOString().split('T')[0];
+    }
+
+    function getDefaultEndDate() {
+        return new Date().toISOString().split('T')[0];
+    }
+
     // Default to last 7 days if no dates are provided
     const [startDate, setStartDate] = useState(
         searchParams.get('startDate') || getDefaultStartDate()
@@ -15,23 +26,11 @@ export default function DateRangePicker() {
         searchParams.get('endDate') || getDefaultEndDate()
     );
 
-    function getDefaultStartDate() {
-        // Default to 2 days ago
-        const date = new Date();
-        date.setDate(date.getDate() - 2);
-        return date.toISOString().split('T')[0];
-    }
-
-    function getDefaultEndDate() {
-        // Default to current date
-        return new Date().toISOString().split('T')[0];
-    }
-
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
         // Create a new URLSearchParams instance
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams();
         params.set('startDate', startDate);
         params.set('endDate', endDate);
 
