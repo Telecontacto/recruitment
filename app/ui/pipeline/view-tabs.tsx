@@ -18,6 +18,11 @@ interface TabPanelProps {
     value: number;
 }
 
+interface DocumentViewerProps {
+    documentId: string;
+    documentName: string;
+}
+
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
@@ -40,6 +45,94 @@ function a11yProps(index: number) {
         'aria-controls': `simple-tabpanel-${index}`,
     };
 }
+
+const DocumentViewer: React.FC<DocumentViewerProps> = ({ documentId, documentName }) => {
+    const [fileUrl, setFileUrl] = React.useState<string | null>(null);
+    const [error, setError] = React.useState<string | null>(null);
+    const [loading, setLoading] = React.useState<boolean>(true);
+
+    const fetchFile = async () => {
+        setLoading(true);
+        try {
+            // Try different file name formats in order
+            const urlFormats = [
+                // Format 1: ID-documentName
+                `https://reports.telecontacto.com/reclutamiento/resume/${documentId}-${documentName}`,
+                // Format 2: just documentName (without ID prefix)
+                `https://reports.telecontacto.com/reclutamiento/resume/${documentName}`,
+                // Format 3: try documentName without ID if it already has the ID as prefix
+                documentName.startsWith(documentId)
+                    ? `https://reports.telecontacto.com/reclutamiento/resume/${documentName}`
+                    : null
+            ].filter(Boolean); // Remove any null entries
+
+            let foundFile = false;
+
+            // Try each URL format until one works
+            for (const originalUrl of urlFormats) {
+                if (foundFile) break;
+
+                try {
+                    if (!originalUrl) continue;
+                    const checkResponse = await fetch(`/api/proxy?url=${encodeURIComponent(originalUrl)}`, {
+                        method: 'HEAD',
+                    });
+
+                    if (checkResponse.ok) {
+                        setFileUrl(`/api/proxy?url=${encodeURIComponent(originalUrl)}`);
+                        setError(null);
+                        foundFile = true;
+                        break;
+                    }
+                } catch (err) {
+                    console.warn(`Failed to fetch with format: ${originalUrl}`, err);
+                    // Continue to next format
+                }
+            }
+
+            // If none of the formats worked
+            if (!foundFile) {
+                setError("File not found after trying multiple formats.");
+                setFileUrl(null);
+            }
+        } catch (err) {
+            console.error("Error in file fetching process:", err);
+            setError("Error checking file existence.");
+            setFileUrl(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
+        if (documentId && documentName) {
+            fetchFile();
+        }
+    }, [documentId, documentName]);
+
+    return (
+        <div className="relative min-h-[500px] border border-gray-300 rounded-lg">
+            {loading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-gray-500 dark:text-gray-400">Loading document...</p>
+                </div>
+            ) : error ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-red-500">{error}</p>
+                </div>
+            ) : fileUrl ? (
+                <iframe
+                    src={fileUrl}
+                    width="100%"
+                    height="500px"
+                    title="Document Viewer"
+                    className="border-0 rounded-lg"
+                    onError={() => setError("Error displaying document.")}
+                ></iframe>
+            ) : null}
+        </div>
+    );
+};
 
 export default function ViewApplication({
     data,
@@ -66,6 +159,8 @@ export default function ViewApplication({
     const isPDF = (filename: string) => {
         return filename?.toLowerCase().endsWith('.pdf');
     };
+
+    console.log(data[0].nombreDocumento)
 
     return (
         <div className="dark:bg-gray-800 transition-colors duration-300 rounded-lg">
@@ -897,26 +992,14 @@ export default function ViewApplication({
                                 <h2 className="text-lg font-medium mb-4 dark:text-white">Application Document</h2>
                                 {data[0].nombreDocumento ? (
                                     <div className="space-y-4">
-                                        {isPDF(data[0].nombreDocumento) ? (
-                                            <iframe
-                                                src={`https://reports.telecontacto.com/reclutamiento/resume/${data[0].nombreDocumento.startsWith(data[0].ID)
-                                                    ? `${data[0].ID}-${data[0].nombreDocumento}`
-                                                    : data[0].nombreDocumento
-                                                    }`}
-                                                className="w-full h-[600px] border-2 border-gray-300 rounded-lg"
-                                                title="Document Preview"
-                                            />
-                                        ) : (
-                                            <div className="text-center py-8 dark:text-gray-400">
-                                                <DocumentIcon className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                                                <p>Preview not available for this file type</p>
-                                                <p className="text-sm text-gray-500">Click download to view the document</p>
-                                            </div>
-                                        )}
+                                        <DocumentViewer
+                                            documentId={data[0].ID}
+                                            documentName={data[0].nombreDocumento}
+                                        />
                                         <div className="flex justify-end">
                                             <a
-                                                href={`https://reports.telecontacto.com/reclutamiento/resume/${data[0].ID}-${data[0].nombreDocumento}`}
-                                                download
+                                                href={`/api/proxy?url=${encodeURIComponent(`https://reports.telecontacto.com/reclutamiento/resume/${data[0].ID}-${data[0].nombreDocumento}`)}`}
+                                                download={data[0].nombreDocumento}
                                                 className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                                             >
                                                 <DocumentIcon className="h-5 w-5 mr-2" />

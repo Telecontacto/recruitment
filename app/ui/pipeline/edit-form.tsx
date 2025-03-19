@@ -65,6 +65,7 @@ export default function EditApplicationForm({ id, interviewer }: EditApplication
               >
                 <option value="">Select</option>
                 <option value="Angélica Román">Angélica Román</option>
+                <option value="Deliz Cordero">Deliz Cordero</option>
                 <option value="Nandelis Rodríguez">Nandelis Rodríguez</option>
                 <option value="Rose Morales">Rose Morales</option>
                 <option value="Ambar Torres">Ambar Torres</option>
