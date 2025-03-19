@@ -219,7 +219,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     };
 
     const isSuccessful = (attempt: Attempt) => {
-        return attempt.contacted === 'contacted' && ['scheduled_interview', 'not_interested'].includes(attempt.notes);
+        return attempt.contacted === 'contacted' && ['scheduled_interview', 'not_interested', 'not_qualified'].includes(attempt.notes);
     };
 
     const shouldShowAttempt = (index: number) => {
@@ -243,6 +243,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                     { value: 'will_call_back', label: 'Will Call Back' },
                     { value: 'not_interested', label: 'Not Interested' },
                     { value: 'hang_up', label: 'Hung Up' },
+                    { value: 'not_qualified', label: 'Not Qualified' },
                 ];
             case 'no_answer':
                 return [

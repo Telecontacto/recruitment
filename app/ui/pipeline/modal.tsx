@@ -3,7 +3,6 @@ import { ModalProps, DeleteModalProps, HRModalProps, CreateApplicantModalProps }
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { montserrat } from '@/app/ui/fonts'
-import { assignRecruiter } from "@/app/api/queryHandle/fetchApi";
 
 export default function Modal({ isOpen, color, message }: ModalProps) {
     const [isVisible, setIsVisible] = useState(false);
@@ -325,6 +324,80 @@ export function CreateApplicantModal({ isOpen, onClose, onSubmit, user }: Create
                                 </button>
                             </div>
                         </form>
+                    </DialogPanel>
+                </div>
+            </div>
+        </Dialog>
+    );
+}
+
+// Add new interface for AppointmentDetailsModal
+interface AppointmentDetailsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    appointment: {
+        ID: number;
+        NombreCitado: string;
+        Telefono: string;
+        Fecha: string;
+        Hora: string;
+        Status?: string;
+    } | null;
+}
+
+export function AppointmentDetailsModal({ isOpen, onClose, appointment }: AppointmentDetailsModalProps) {
+    if (!isOpen || !appointment) return null;
+
+    return (
+        <Dialog open={isOpen} onClose={onClose} className="relative z-10">
+            <DialogBackdrop
+                transition
+                className="fixed inset-0 bg-gray-2000/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in"
+            />
+
+            <div className={`${montserrat.className} fixed inset-0 z-10 w-screen overflow-y-auto`}>
+                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <DialogPanel
+                        transition
+                        className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-lg data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+                    >
+                        <div className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-200">
+                            <h2 className="text-xl font-semibold mb-4">Appointment Details</h2>
+                            <div className="mb-4">
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Solicitor ID</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.ID}</div>
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.NombreCitado}</div>
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Telefono}</div>
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Status || 'Not specified'}</div>
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Fecha}</div>
+                                </div>
+                                <div className="mb-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
+                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Hora}</div>
+                                </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={onClose}
+                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white px-4 py-2 rounded"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
                     </DialogPanel>
                 </div>
             </div>

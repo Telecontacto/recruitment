@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { fetchCalendarAppointments, insertCalendarAppointment } from '@/app/api/queryHandle/fetchApi';
-import Modal from '@/app/ui/pipeline/modal';
-import { montserrat } from '@/app/ui/fonts';
+import { fetchCalendarAppointments } from '@/app/api/queryHandle/fetchApi';
+import Modal, { AppointmentDetailsModal } from '@/app/ui/pipeline/modal';
+import {
+    PencilSquareIcon
+} from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 
 interface Event {
     ID: number;
@@ -10,6 +13,7 @@ interface Event {
     Telefono: string;
     Fecha: string; // ISO format (YYYY-MM-DD)
     Hora: string; // Format HH:mm
+    Status?: string; // Added Status field which might be optional
 }
 
 interface calendarProps {
@@ -25,11 +29,12 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
     const [events, setEvents] = useState<Event[]>([]);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()); // 0 = January, 1 = February, etc.
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-    const [showAddEventModal, setShowAddEventModal] = useState(false);
-    const [newEventTime, setNewEventTime] = useState<string | null>(null);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [ModalMessage, setModalMessage] = useState('')
-    const [ModalColor, setModalColor] = useState('')
+    const [ModalMessage, setModalMessage] = useState('');
+    const [ModalColor, setModalColor] = useState('');
+    // New state variables for edit modal
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedAppointment, setSelectedAppointment] = useState<Event | null>(null);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -71,37 +76,6 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
         }
     };
 
-    const addEvent = (time: string) => {
-        setNewEventTime(time);
-        setShowAddEventModal(true);
-    };
-
-    const confirmAddEvent = async () => {
-        if (selectedDate && newEventTime) {
-            const newEvent: Event = {
-                ID: id, // Use the id from props instead of events.length
-                NombreCitado: name,
-                Telefono: phone,
-                Fecha: selectedDate,
-                Hora: newEventTime,
-            };
-            setEvents([...events, newEvent]);
-            let msg = await insertCalendarAppointment(name, phone, selectedDate, newEventTime, "assignRecruiter", id); // Add id parameter
-            if (msg) {
-                setModalMessage('Appointment set successfully');
-                setModalColor('bg-green-500');
-                setModalOpen(true);
-                setTimeout(() => {
-                    setModalOpen(false);
-                    setModalMessage('');
-                    setModalColor('');
-                }, 2000);
-            }
-            setShowAddEventModal(false);
-            setNewEventTime(null);
-        }
-    };
-
     const eventsForSelectedDate = selectedDate
         ? events.filter(event => event.Fecha === selectedDate)
         : [];
@@ -140,8 +114,37 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
         );
     };
 
+    const handleEditAppointment = (event: Event) => {
+        setSelectedAppointment(event);
+        setShowEditModal(true);
+    };
+
+    const closeEditModal = () => {
+        setShowEditModal(false);
+        setSelectedAppointment(null);
+    };
+
+    // Helper function to determine name color based on status
+    const getStatusColor = (status: string | undefined) => {
+        if (!status) return ''; // Default for null/undefined status - use the default text color
+
+        // Convert to lowercase for case-insensitive comparison
+        const statusLower = status.toLowerCase();
+
+        if (statusLower.includes('cancel')) return 'text-red-600';
+        if (statusLower.includes('confirm')) return 'text-green-600';
+        if (statusLower.includes('reschedule')) return 'text-yellow-600';
+        if (statusLower.includes('no show') || statusLower.includes('no_show')) return 'text-purple-600';
+        if (statusLower.includes('pending')) return 'text-blue-600';
+        if (statusLower.includes('walkin')) return 'text-pink-600';
+        if (statusLower.includes('saturday')) return 'text-indigo-600';
+
+        // Return empty string for other status values to use default text color
+        return '';
+    };
+
     return (
-        <div className="container mx-auto text-center mt-10">
+        <div className="container mx-auto text-center mt-10 bg-white dark:bg-gray-800 dark:text-gray-200 p-6 rounded-lg shadow-md">
             <div className="flex items-center justify-between mb-6">
                 <button
                     onClick={handlePrevMonth}
@@ -194,7 +197,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                     <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Appointments for {selectedDate}</h2>
                     <div className="mt-4">
                         <h3 className="text-lg font-semibold mb-2 dark:text-gray-300">Available Time Slots</h3>
-                        <ul className="list-none">
+                        <ul className="list-none space-y-2">
                             {timeSlots.map((time, index) => {
                                 const eventsInTimeSlot = eventsForSelectedDate.filter(event => event.Hora === time);
                                 const isFull = eventsInTimeSlot.length >= 10;
@@ -203,41 +206,67 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                                 return (
                                     <li
                                         key={index}
-                                        className={`p-2 border rounded-lg mb-1 cursor-pointer ${isFull
+                                        className={`p-2 border rounded-lg cursor-pointer ${isFull
                                             ? 'bg-red-500 text-white'
                                             : hasAppointment
                                                 ? 'bg-yellow-200 dark:bg-yellow-600 dark:text-white font-bold'
                                                 : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'
                                             }`}
                                     >
-                                        <div onClick={() => toggleTimeSlot(time)}>
+                                        <div onClick={() => toggleTimeSlot(time)} className="font-medium">
                                             {new Date('1970-01-01T' + time + 'Z')
                                                 .toLocaleTimeString('en-US',
                                                     { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
                                                 )}
                                             {hasAppointment && ' (Your Appointment)'}
                                         </div>
-                                        {!isFull && !hasAppointment && (
-                                            <button
-                                                onClick={() => addEvent(time)}
-                                                className="mt-2 text-sm text-red-500 hover:underline"
-                                            >
-                                                Set Appointment
-                                            </button>
-                                        )}
-                                        {expandedTimeSlot === time && (
-                                            <ul className="mt-2 list-disc list-inside">
-                                                {eventsInTimeSlot.length > 0 ? (
-                                                    eventsInTimeSlot.map(event => (
-                                                        <li key={event.ID} className={event.NombreCitado === name ? 'font-bold' : ''}>
-                                                            <strong>{event.NombreCitado}</strong>: {event.Telefono}
-                                                            {event.NombreCitado === name && ' (Your Appointment)'}
+
+                                        {expandedTimeSlot === time && eventsInTimeSlot.length > 0 && (
+                                            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
+                                                <p className="text-sm font-medium mb-1 text-left">Appointments:</p>
+                                                <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                                                    {eventsInTimeSlot.map(event => (
+                                                        <li
+                                                            key={event.ID}
+                                                            className={`py-2 flex justify-between items-center ${event.NombreCitado === name ? 'font-bold' : ''
+                                                                }`}
+                                                        >
+                                                            <div className="text-left">
+                                                                <strong className={clsx(
+                                                                    getStatusColor(event.Status),
+                                                                    'transition-colors duration-200'
+                                                                )}>
+                                                                    {event.NombreCitado}
+                                                                </strong>
+                                                                : {event.Telefono}
+                                                                {event.Status && (
+                                                                    <span className="text-xs ml-2">
+                                                                        {event.Status}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleEditAppointment(event);
+                                                                }}
+                                                                className="bg-red-600 hover:bg-red-500 text-white text-xs px-2 py-1 rounded flex items-center"
+                                                            >
+                                                                <PencilSquareIcon className="h-4 w-4 mr-1" />
+                                                                Edit
+                                                            </button>
                                                         </li>
-                                                    ))
-                                                ) : (
-                                                    <li>No Appointments in this time slot</li>
-                                                )}
-                                            </ul>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+
+                                        {expandedTimeSlot === time && eventsInTimeSlot.length === 0 && (
+                                            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600 text-left">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    No appointments in this time slot
+                                                </p>
+                                            </div>
                                         )}
                                     </li>
                                 );
@@ -247,31 +276,14 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                 </div>
             )}
 
-            {showAddEventModal && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-200">
-                        <h2 className="text-xl font-semibold mb-4">Set Appointment</h2>
-                        <p className="mb-4">Are you sure you want to set the appointment to {selectedDate} at {newEventTime}?</p>
-                        <div className="flex justify-end space-x-4">
-                            <button
-                                onClick={confirmAddEvent}
-                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                onClick={() => setShowAddEventModal(false)}
-                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <AppointmentDetailsModal
+                isOpen={showEditModal}
+                onClose={closeEditModal}
+                appointment={selectedAppointment}
+            />
+
             <Modal isOpen={isModalOpen} color={ModalColor} message={ModalMessage} />
         </div>
-
     );
 };
 

@@ -1,41 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useDateContext } from '@/app/context/DateContext';
+import { useRouter } from 'next/navigation';
 
 export default function DateRangePicker() {
-    const searchParams = useSearchParams();
+    const { startDate, endDate, setStartDate, setEndDate } = useDateContext();
     const router = useRouter();
-
-    // Helper functions to get default dates
-    function getDefaultStartDate() {
-        const date = new Date();
-        date.setDate(date.getDate() - 2);
-        return date.toISOString().split('T')[0];
-    }
-
-    function getDefaultEndDate() {
-        return new Date().toISOString().split('T')[0];
-    }
-
-    // Default to last 7 days if no dates are provided
-    const [startDate, setStartDate] = useState(
-        searchParams.get('startDate') || getDefaultStartDate()
-    );
-    const [endDate, setEndDate] = useState(
-        searchParams.get('endDate') || getDefaultEndDate()
-    );
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-
-        // Create a new URLSearchParams instance
-        const params = new URLSearchParams();
-        params.set('startDate', startDate);
-        params.set('endDate', endDate);
-
-        // Update the URL with the new search params
-        router.push(`?${params.toString()}`);
+        // Force a refresh so that ReportData will re-render with new dates
+        router.refresh();
     }
 
     return (
@@ -64,14 +39,6 @@ export default function DateRangePicker() {
                         onChange={(e) => setEndDate(e.target.value)}
                         className="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
                     />
-                </div>
-                <div className="w-full md:w-1/3 flex items-end">
-                    <button
-                        type="submit"
-                        className="w-full bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-md transition-colors"
-                    >
-                        Filter
-                    </button>
                 </div>
             </div>
         </form>
