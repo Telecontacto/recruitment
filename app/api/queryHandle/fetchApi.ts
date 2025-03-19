@@ -426,18 +426,38 @@ export async function addApplicant(data: any): Promise<any> {
   }
 }
 
-export async function fetchReportData(): Promise<any> {
+export async function fetchReportData(startDate?: string, endDate?: string): Promise<any> {
   try {
     const baseUrl = typeof window === 'undefined' 
-    ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
-    : '';
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
 
-    const returnData = [];
-
-    const response = await fetch(
-      `${baseUrl}/api/reports`,
-      { method: 'GET' }
-    );
+    // If no startDate is provided, calculate date from 2 days ago
+    if (!startDate) {
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      startDate = twoDaysAgo.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    }
+    
+    // If no endDate is provided, use current date
+    if (!endDate) {
+      endDate = new Date().toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    }
+    
+    // List of recruiters to include in the report
+    const recruiters = ['Ambar Torres', 'Rose Morales', 'Nandelis Rodríguez', 'Deliz Cordero']; // Add or modify recruiters as needed
+    
+    const response = await fetch(`${baseUrl}/api/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        startDate,
+        endDate,
+        recruiters
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
@@ -446,7 +466,7 @@ export async function fetchReportData(): Promise<any> {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching report data:', error);
     throw error;
   }
 }
