@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({
-  searchParams = {}
+  searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const session = await Session();
 
   // Extract and type the search params we need
   const typedSearchParams = {
-    startDate: typeof searchParams.startDate === 'string' ? searchParams.startDate : undefined,
-    endDate: typeof searchParams.endDate === 'string' ? searchParams.endDate : undefined
+    startDate: typeof searchParams?.startDate === 'string' ? searchParams.startDate : undefined,
+    endDate: typeof searchParams?.endDate === 'string' ? searchParams.endDate : undefined
   };
 
   return (
