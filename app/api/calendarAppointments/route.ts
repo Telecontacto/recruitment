@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     console.log(`Fetching calendar appointments for ${date}`);
 
     const query = `
-      SELECT ID, NombreCitado, Telefono, Fecha, Hora
+      SELECT solicitorId as ID, NombreCitado, Telefono, Fecha, Hora, Status, CitadoA
       FROM CITAS a
       WHERE CAST(a.fecha AS DATE) LIKE @param1
       ORDER BY a.fecha DESC

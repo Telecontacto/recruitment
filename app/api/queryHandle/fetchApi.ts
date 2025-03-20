@@ -102,6 +102,50 @@ export const insertCalendarAppointment = async (
   }
 };
 
+export const updateCalendarAppointment = async (
+  updateData: any
+): Promise<any> => {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+    ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+    : '';
+
+    const response = await fetch(`${baseUrl}/api/calendarAppointments/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Status: updateData.Status,
+        ID: updateData.ID
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating data: ${response.status} ${response.statusText}`);
+    }
+
+    if(updateData.Status === 'reschedule') {
+      const insertResponse = await fetch(`${baseUrl}/api/calendarAppointments/insert?name=${updateData.NombreCitado}&phone=${updateData.Telefono}&date=${updateData.Fecha}&time=${updateData.Hora}&recruiter=${updateData.CitadoA}&id=${updateData.ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!insertResponse.ok) {
+        throw new Error(`Error inserting data: ${response.status} ${response.statusText}`);
+      }
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating data:', error);
+    throw error;
+  }
+};
+
 export async function fetchCardData(startDate: string, endDate: string): Promise<any> {
   try {
     const baseUrl = typeof window === 'undefined' 

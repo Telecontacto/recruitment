@@ -343,10 +343,60 @@ interface AppointmentDetailsModalProps {
         Hora: string;
         Status?: string;
     } | null;
+    onSave?: (updatedAppointment: any) => Promise<void>;
 }
 
-export function AppointmentDetailsModal({ isOpen, onClose, appointment }: AppointmentDetailsModalProps) {
+export function AppointmentDetailsModal({ isOpen, onClose, appointment, onSave }: AppointmentDetailsModalProps) {
+    const [editedStatus, setEditedStatus] = useState<string>('');
+    const [editedDate, setEditedDate] = useState<string>('');
+    const [editedTime, setEditedTime] = useState<string>('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    // Available status options
+    const statusOptions = [
+        { value: 'confirmed', label: 'Confirmed' },
+        { value: 'canceled', label: 'Canceled' },
+        { value: 'reschedule', label: 'Reschedule' },
+        { value: 'no_show', label: 'No Show' },
+        { value: 'saturday', label: 'Saturday' },
+        { value: 'walkin', label: 'Walk-in' },
+        { value: 'follow_up', label: 'Follow Up' },
+    ];
+
+    // Initialize form values when appointment changes
+    useEffect(() => {
+        if (appointment) {
+            setEditedStatus(appointment.Status || '');
+            setEditedDate(appointment.Fecha);
+            setEditedTime(appointment.Hora);
+            setErrorMessage(null);
+        }
+    }, [appointment]);
+
     if (!isOpen || !appointment) return null;
+
+    const handleSave = async () => {
+        if (!onSave) return;
+
+        setIsSaving(true);
+        setErrorMessage(null);
+
+        try {
+            await onSave({
+                ...appointment,
+                Status: editedStatus,
+                Fecha: editedDate,
+                Hora: editedTime
+            });
+            onClose();
+        } catch (error) {
+            console.error('Error saving appointment:', error);
+            setErrorMessage('Failed to save changes. Please try again.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     return (
         <Dialog open={isOpen} onClose={onClose} className="relative z-10">
@@ -363,6 +413,13 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
                     >
                         <div className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-gray-200">
                             <h2 className="text-xl font-semibold mb-4">Appointment Details</h2>
+
+                            {errorMessage && (
+                                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                                    {errorMessage}
+                                </div>
+                            )}
+
                             <div className="mb-4">
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Solicitor ID</label>
@@ -378,24 +435,54 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment }: Appoin
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Status || 'Not specified'}</div>
+                                    <select
+                                        value={editedStatus}
+                                        onChange={(e) => setEditedStatus(e.target.value)}
+                                        className="mt-1 w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                    >
+                                        <option value="">-- Select Status --</option>
+                                        {statusOptions.map((option) => (
+                                            <option key={option.value} value={option.value}>
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
-                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Fecha}</div>
+                                    <input
+                                        type="date"
+                                        value={editedDate}
+                                        onChange={(e) => setEditedDate(e.target.value)}
+                                        className="mt-1 w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                    />
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time</label>
-                                    <div className="mt-1 p-2 bg-gray-100 dark:bg-gray-700 rounded">{appointment.Hora}</div>
+                                    <input
+                                        type="time"
+                                        value={editedTime}
+                                        onChange={(e) => setEditedTime(e.target.value)}
+                                        className="mt-1 w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                    />
                                 </div>
                             </div>
-                            <div className="flex justify-end">
+                            <div className="flex justify-end space-x-3">
                                 <button
                                     onClick={onClose}
                                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white px-4 py-2 rounded"
                                 >
-                                    Close
+                                    Cancel
                                 </button>
+                                {onSave && (
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={isSaving}
+                                        className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded disabled:bg-red-300"
+                                    >
+                                        {isSaving ? 'Saving...' : 'Save Changes'}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </DialogPanel>

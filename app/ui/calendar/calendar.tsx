@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { fetchCalendarAppointments } from '@/app/api/queryHandle/fetchApi';
+import { fetchCalendarAppointments, updateCalendarAppointment } from '@/app/api/queryHandle/fetchApi';
 import Modal, { AppointmentDetailsModal } from '@/app/ui/pipeline/modal';
 import {
     PencilSquareIcon
@@ -124,6 +124,47 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
         setSelectedAppointment(null);
     };
 
+    const handleSaveAppointment = async (updatedAppointment: Event) => {
+        try {
+            // Await the API call to update the appointment
+            await updateCalendarAppointment(updatedAppointment);
+
+            // Refresh appointments data after update to ensure state is in sync with backend
+            const refreshedData = await fetchCalendarAppointments(currentMonth + 1, currentYear);
+            setEvents(refreshedData);
+
+            // Close the edit modal
+            closeEditModal();
+
+            // Show success message
+            setModalMessage('Appointment updated successfully');
+            setModalColor('bg-green-500');
+            setModalOpen(true);
+
+            // Hide success message after a delay
+            setTimeout(() => {
+                setModalOpen(false);
+                setModalColor('');
+                setModalMessage('');
+            }, 3000);
+
+        } catch (error) {
+            console.error('Failed to update appointment:', error);
+
+            // Show error message
+            setModalMessage('Failed to update appointment');
+            setModalColor('bg-red-500');
+            setModalOpen(true);
+
+            // Hide error message after a delay
+            setTimeout(() => {
+                setModalOpen(false);
+            }, 3000);
+
+            throw error; // Re-throw to let the modal component handle it
+        }
+    };
+
     // Helper function to determine name color based on status
     const getStatusColor = (status: string | undefined) => {
         if (!status) return ''; // Default for null/undefined status - use the default text color
@@ -131,13 +172,13 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
         // Convert to lowercase for case-insensitive comparison
         const statusLower = status.toLowerCase();
 
-        if (statusLower.includes('cancel')) return 'text-red-600';
-        if (statusLower.includes('confirm')) return 'text-green-600';
-        if (statusLower.includes('reschedule')) return 'text-yellow-600';
-        if (statusLower.includes('no show') || statusLower.includes('no_show')) return 'text-purple-600';
-        if (statusLower.includes('pending')) return 'text-blue-600';
+        if (statusLower.includes('canceled')) return 'text-blue-600';
+        if (statusLower.includes('confirmed')) return 'text-green-600';
+        if (statusLower.includes('reschedule')) return 'text-orange-600';
+        if (statusLower.includes('no_show') || statusLower.includes('no_show')) return 'text-red-600';
+        if (statusLower.includes('saturday')) return 'text-purple-600';
         if (statusLower.includes('walkin')) return 'text-pink-600';
-        if (statusLower.includes('saturday')) return 'text-indigo-600';
+        if (statusLower.includes('follow_up')) return 'text-yellow-600';
 
         // Return empty string for other status values to use default text color
         return '';
@@ -280,6 +321,7 @@ const Calendar: React.FC<calendarProps> = ({ name, phone, id }) => {
                 isOpen={showEditModal}
                 onClose={closeEditModal}
                 appointment={selectedAppointment}
+                onSave={handleSaveAppointment}
             />
 
             <Modal isOpen={isModalOpen} color={ModalColor} message={ModalMessage} />
