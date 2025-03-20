@@ -24,9 +24,9 @@ export async function POST(request: Request) {
         SELECT 
           '${recruiter}' AS Recruiter,
           COUNT(CASE WHEN a.Attempt1 IS NULL OR a.Attempt1 = '' THEN 1 END) AS No_Calls,
-          COUNT(CASE WHEN a.Attempt1 = 'no_answer' THEN 1 END) AS Total_Attempt1_No_Answer,
-          COUNT(CASE WHEN a.Attempt2 = 'no_answer' THEN 1 END) AS Total_Attempt2_No_Answer,
-          COUNT(CASE WHEN a.Attempt3 = 'no_answer' THEN 1 END) AS Total_Attempt3_No_Answer,
+          COUNT(CASE WHEN a.Attempt1 in ('no_answer', 'contacted') and a.action1 not in ('scheduled_interview', 'not_interested', 'not_qualified') and a.attempt2 is null THEN 1 END) AS Total_Attempt1_No_Answer,
+          COUNT(CASE WHEN a.Attempt2 in ('no_answer', 'contacted') and a.action2 not in ('scheduled_interview', 'not_interested', 'not_qualified') and a.attempt3 is null THEN 1 END) AS Total_Attempt2_No_Answer,
+          COUNT(CASE WHEN a.Attempt3 in ('no_answer', 'contacted') and a.action3 not in ('scheduled_interview', 'not_interested', 'not_qualified') and a.attempt4 is null THEN 1 END) AS Total_Attempt3_No_Answer,
           COUNT(DISTINCT c.ID) AS Total_Citados
         FROM ENTREVISTA_INICIAL a
         INNER JOIN RECLUTAMIENTO_SOLICITUDES b ON a.solicitorId = b.ID
