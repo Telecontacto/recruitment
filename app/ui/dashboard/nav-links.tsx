@@ -18,7 +18,7 @@ import { Session } from 'next-auth';
 const links = [
   { name: 'navDash', href: '/dashboard', icon: HomeIcon, roles: ['admin', 'user'] },
   { name: 'navPipeline', href: '/dashboard/pipeline', icon: DocumentDuplicateIcon, roles: ['admin', 'user'] },
-  { name: 'navCalendar', href: '/dashboard/calendar', icon: CalendarIcon, roles: ['admin'] },
+  { name: 'navCalendar', href: '/dashboard/calendar', icon: CalendarIcon, roles: ['admin', 'user', 'reception'] },
   { name: 'navReport', href: '/dashboard/report', icon: FlagIcon, roles: ['admin'] },
 ];
 

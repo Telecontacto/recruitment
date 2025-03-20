@@ -27,6 +27,10 @@ export const authConfig = {
           if (isLoggedIn) return true;
           return false; // Redirect unathenticated users to login page
       } else if (isLoggedIn) {
+          const role = auth.user.role;
+          if (role === 'reception') {
+              return Response.redirect(new URL('/dashboard/calendar', request.nextUrl));;
+          }
           return Response.redirect(new URL('/dashboard', request.nextUrl));
       }
   },
