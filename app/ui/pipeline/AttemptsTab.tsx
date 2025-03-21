@@ -21,6 +21,10 @@ interface InitialData {
     action2?: string;
     action3?: string;
     action4?: string;
+    attempt1Date?: string;
+    attempt2Date?: string;
+    attempt3Date?: string;
+    attempt4Date?: string;
     notQualified: string;
     notQualifiedReason?: string;
     Campana?: string;
@@ -38,19 +42,46 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     onUpdateInfo,
     onUpdateSuccess
 }) => {
-    // Initialize states from initialData
+    // Add date formatting helper to handle timezone issues
+    const formatDate = (dateString: string) => {
+        if (!dateString) return '';
+
+        // Parse the date and adjust for timezone to avoid the day-before issue
+        const date = new Date(dateString);
+
+        // Use the date components directly to create a timezone-agnostic date display
+        return `${date.getMonth() + 1}/${date.getDate() + 1}/${date.getFullYear()}`;
+    };
+
+    // Initialize attempts state properly
     const [attempts, setAttempts] = useState([
-        { contacted: initialData.attempt1 || '', notes: initialData.action1 || '' },
-        { contacted: initialData.attempt2 || '', notes: initialData.action2 || '' },
-        { contacted: initialData.attempt3 || '', notes: initialData.action3 || '' },
-        { contacted: initialData.attempt4 || '', notes: initialData.action4 || '' }
+        {
+            contacted: initialData.attempt1 || '',
+            notes: initialData.action1 || '',
+            date: initialData.attempt1Date || ''
+        },
+        {
+            contacted: initialData.attempt2 || '',
+            notes: initialData.action2 || '',
+            date: initialData.attempt2Date || ''
+        },
+        {
+            contacted: initialData.attempt3 || '',
+            notes: initialData.action3 || '',
+            date: initialData.attempt3Date || ''
+        },
+        {
+            contacted: initialData.attempt4 || '',
+            notes: initialData.action4 || '',
+            date: initialData.attempt4Date || ''
+        }
     ]);
 
-    // Fixed qualification state initialization
-    const [qualification, setQualification] = useState<Qualification>(() => {
+    // Initialize qualification state properly
+    const [qualification, setQualification] = useState(() => {
+        // Parse the string 'true'/'false' to boolean
+        const isNotQualified = initialData.notQualified === 'true';
         let qualificationStatus = '';
-        // Convert string 'true'/'false' to actual boolean for comparison
-        const isNotQualified = initialData.notQualified === 'qualified' ? false : true;
 
         if (isNotQualified) {
             qualificationStatus = 'not_qualified';
@@ -164,6 +195,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                 index + 1,
                 updatedAttempts[index].contacted,
                 updatedAttempts[index].notes,
+                updatedAttempts[index].date,
                 initialData.solicitorId
             );
             onUpdateSuccess('Attempt Updated Successfully');
@@ -242,6 +274,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                     { value: 'scheduled_interview', label: 'Scheduled Interview' },
                     { value: 'will_call_back', label: 'Will Call Back' },
                     { value: 'not_interested', label: 'Not Interested' },
+                    { value: 're_hire', label: 'Re-hire Evaluation' },
                     { value: 'hang_up', label: 'Hung Up' },
                     { value: 'not_qualified', label: 'Not Qualified' },
                 ];
@@ -271,7 +304,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                 shouldShowAttempt(index) && (
                     <div key={index} className="mb-4">
                         <label className="mb-2 block text-lg font-medium dark:text-gray-300">
-                            Attempt {index + 1}
+                            Attempt {index + 1}{attempt.date && ` - ${formatDate(attempt.date)}`}
                         </label>
                         <div className="flex items-center space-x-4">
                             <select

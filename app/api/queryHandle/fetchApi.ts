@@ -220,6 +220,7 @@ export async function updateAttempts(
   attemptNumber: number, 
   status: string, 
   notes: string,
+  date: string,
   id: number
 ): Promise<any> {
   try {
@@ -236,6 +237,7 @@ export async function updateAttempts(
         attemptNumber,
         status,
         notes,
+        date,
         id
       })
     });

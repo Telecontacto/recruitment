@@ -20,6 +20,7 @@ export type StageData = {
   statussolicitud: string;
   printed: string;
   entrevistador: string;
+  Fecha: string;
 };
 
 export type Stages = {

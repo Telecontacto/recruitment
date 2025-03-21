@@ -8,6 +8,7 @@ export async function POST(request: Request) {
     
     const attempt = `attempt${attemptNumber}`;
     const action = `action${attemptNumber}`;
+    const date = `attempt${attemptNumber}Date`;
 
     if (!id) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
@@ -16,7 +17,8 @@ export async function POST(request: Request) {
     const query = `
             UPDATE ENTREVISTA_INICIAL 
             SET ${attempt} = @param1,
-                ${action} = @param2
+                ${action} = @param2,
+                ${date} = GETDATE()
             WHERE solicitorId = @param3;
             SELECT @@ROWCOUNT as affectedRows;
     `;

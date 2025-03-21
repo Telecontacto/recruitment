@@ -28,6 +28,7 @@ export function Pipeline({
         statussolicitud: string;
         printed: string;
         entrevistador: string;
+        Fecha: string;
     }>;
     onDragStart: (item: any) => void;
     onDrop: (stage: string) => void;
@@ -70,6 +71,25 @@ export function Pipeline({
                             >
                                 {hasPermission ? (
                                     <a href={`/dashboard/pipeline/${item.id}/${step}`} target='_blank' rel='noreferrer'>
+                                        <div className="text-right text-sm text-gray-500 dark:text-gray-300">
+                                            {title === "Received" && (() => {
+                                                const date = new Date(item.Fecha);
+                                                const now = new Date();
+                                                const diff = now.getTime() - date.getTime();
+                                                const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+                                                const weeks = Math.floor(diff / (1000 * 60 * 60 * 24 * 7));
+                                                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                                const hours = Math.floor(diff / (1000 * 60 * 60));
+                                                const minutes = Math.floor(diff / (1000 * 60));
+
+                                                if (months > 0) return `${months}mo ago`;
+                                                if (weeks > 0) return `${weeks}w ago`;
+                                                if (days > 0) return `${days}d ago`;
+                                                if (hours > 0) return `${hours}h ago`;
+                                                if (minutes > 0) return `${minutes}m ago`;
+                                                return 'Just now';
+                                            })()}
+                                        </div>
                                         <strong>
                                             Name: {item.nombre} <br />
                                             Interviewer: {item.entrevistador} <br />
@@ -81,6 +101,9 @@ export function Pipeline({
                                 ) : (
                                     // No link for unauthorized users
                                     <div className="pointer-events-none">
+                                        <div className="text-right text-sm text-gray-500">
+                                            {item.Fecha}
+                                        </div>
                                         <strong>
                                             Name: {item.nombre} <br />
                                             Interviewer: {item.entrevistador} <br />
@@ -229,7 +252,7 @@ export function Pipelines({
             "Hired/Rejected": [],
         };
 
-        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string; }) => {
+        data.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string, Fecha: string; }) => {
             switch (item.statussolicitud) {
                 case "1":
                     updatedStages.Received.push(item);
@@ -327,7 +350,7 @@ export function Pipelines({
                 "Hired/Rejected": [],
             };
 
-            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string; }) => {
+            newData.forEach((item: { id: number; nombre: string; statussolicitud: string, printed: string, entrevistador: string, Fecha: string; }) => {
                 switch (item.statussolicitud.toLowerCase()) {
                     case "1":
                         updatedStages.Received.push(item);

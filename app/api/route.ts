@@ -27,7 +27,8 @@ export async function POST(request: Request) {
         a.id,
         a.statussolicitud,
         a.printed,
-        a.entrevistador
+        a.entrevistador,
+        a.Fecha
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
