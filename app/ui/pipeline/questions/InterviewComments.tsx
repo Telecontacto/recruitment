@@ -112,7 +112,7 @@ const InterviewComments = ({ data, onChange }: { data: any, onChange: (e: Change
                             name="firstInterviewDate"
                             onChange={handleInputChange}
                             onBlur={handleInputBlur}
-                            value={new Date(data.firstInterviewDate).toLocaleDateString() || ''}
+                            value={data.firstInterviewDate || ''}
                             className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
@@ -151,7 +151,7 @@ const InterviewComments = ({ data, onChange }: { data: any, onChange: (e: Change
                             name="secondInterviewDate"
                             onChange={handleInputChange}
                             onBlur={handleInputBlur}
-                            value={data.secondInterviewDate ? new Date(data.secondInterviewDate).toLocaleDateString() : ''}
+                            value={data.secondInterviewDate || ''}
                             className="mt-1 block w-full cursor-text rounded-md border border-gray-200 py-2 pl-3 text-sm outline-2 placeholder:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                         />
                     </div>
