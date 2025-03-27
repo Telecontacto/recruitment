@@ -16,6 +16,7 @@ export const translations = {
     remoteQuestions: 'Remote Questions',
     interviewComments: 'Interview Comments',
     welcome: 'Welcome',
+    extendedAttempts: 'Follow-Up Attempts',
     
     // Add more translations as needed
   },
@@ -36,6 +37,7 @@ export const translations = {
     remoteQuestions: 'Preguntas para Remotos',
     interviewComments: 'Comentarios de Entrevista',
     welcome: 'Bienvenido',
+    extendedAttempts: 'Intentos de Seguimiento',
 
     // Add more translations as needed
   }

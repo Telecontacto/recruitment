@@ -12,6 +12,7 @@ import ClarificationQuestions from './questions/ClarificationQuestions';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { getTranslation } from '@/app/translations';
 import { montserrat } from '@/app/ui/fonts';
+import ExtendedAttemptsTab from './questions/followUpAttempts';
 
 
 interface TabPanelProps {
@@ -87,6 +88,7 @@ export default function ReviewApplication({
                             disabled={info.remote === 'No'}
                         />
                         <Tab label={getTranslation("interviewComments", language)} {...a11yProps(4)} />
+                        <Tab label={getTranslation("extendedAttempts", language) || "Extended Attempts"} {...a11yProps(5)} />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
@@ -103,6 +105,18 @@ export default function ReviewApplication({
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={4}>
                     <InterviewComments data={info} onChange={changeData} />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={5}>
+                    <ExtendedAttemptsTab
+                        initialData={info}
+                        onUpdateInfo={(newInfo) => {
+                            setInfo((prevData: any) => ({ ...prevData, ...newInfo }));
+                        }}
+                        onUpdateSuccess={(message) => {
+                            // You can add a notification system here if needed
+                            console.log(message);
+                        }}
+                    />
                 </CustomTabPanel>
             </Box>
         </div>

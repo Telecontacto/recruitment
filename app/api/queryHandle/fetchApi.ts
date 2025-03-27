@@ -290,6 +290,80 @@ export async function updateQualification(
   }
 }
 
+export async function updateFollowUp(
+  attemptNumber: number, 
+  status: string, 
+  notes: string,
+  date: string,
+  id: number
+): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/interviewPipeline/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        attemptNumber,
+        status,
+        notes,
+        date,
+        id
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating attempts: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating attempts:', error);
+    throw error;
+  }
+}
+
+export async function updateQualificationFollowUp(
+  status: string,
+  reason: string,
+  id: number,
+  campaign: string
+): Promise<any> {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response = await fetch(`${baseUrl}/api/qualification/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status,
+        reason,
+        id,
+        campaign
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating qualification: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating qualification:', error);
+    throw error;
+  }
+}
+
 export async function updatePersonalInfo(solicitorId: string, data: any) {
     console.log('Starting updatePersonalInfo:', { solicitorId, data });
     try {

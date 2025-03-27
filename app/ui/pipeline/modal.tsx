@@ -352,17 +352,43 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment, onSave }
     const [editedTime, setEditedTime] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [scheduleCount, setScheduleCount] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // Available status options
     const statusOptions = [
         { value: 'confirmed', label: 'Confirmed' },
         { value: 'canceled', label: 'Canceled' },
-        { value: 'reschedule', label: 'Reschedule' },
+        { value: 'reschedule', label: 'Reschedule', disabled: scheduleCount >= 3 },
         { value: 'no_show', label: 'No Show' },
         { value: 'saturday', label: 'Saturday' },
         { value: 'walkin', label: 'Walk-in' },
         { value: 'follow_up', label: 'Follow Up' },
     ];
+
+    // Fetch the number of interviews scheduled for this applicant
+    useEffect(() => {
+        async function fetchScheduleCount() {
+            if (!appointment || !isOpen) return;
+
+            setIsLoading(true);
+            try {
+                const response = await fetch(`/api/calendarAppointments/count?id=${appointment.ID}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch schedule count');
+                }
+                const data = await response.json();
+                setScheduleCount(data[0].total || 0);
+            } catch (error) {
+                console.error('Error fetching schedule count:', error);
+                // Don't set error message to avoid confusion with the main functionality
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchScheduleCount();
+    }, [appointment, isOpen]);
 
     // Initialize form values when appointment changes
     useEffect(() => {
@@ -435,18 +461,33 @@ export function AppointmentDetailsModal({ isOpen, onClose, appointment, onSave }
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                                    <select
-                                        value={editedStatus}
-                                        onChange={(e) => setEditedStatus(e.target.value)}
-                                        className="mt-1 w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                    >
-                                        <option value="">-- Select Status --</option>
-                                        {statusOptions.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {isLoading ? (
+                                        <div className="mt-1 p-2 text-gray-500">Loading schedule data...</div>
+                                    ) : (
+                                        <>
+                                            <select
+                                                value={editedStatus}
+                                                onChange={(e) => setEditedStatus(e.target.value)}
+                                                className="mt-1 w-full rounded-md border p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                                            >
+                                                <option value="">-- Select Status --</option>
+                                                {statusOptions.map((option) => (
+                                                    <option
+                                                        key={option.value}
+                                                        value={option.value}
+                                                        disabled={option.disabled}
+                                                    >
+                                                        {option.label} {option.value === 'reschedule' && scheduleCount >= 3 ? '(Limit Reached)' : ''}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            {scheduleCount >= 3 && (
+                                                <p className="text-xs text-amber-600 mt-1 dark:text-amber-400">
+                                                    This applicant has already rescheduled {scheduleCount} times. No more reschedules are allowed.
+                                                </p>
+                                            )}
+                                        </>
+                                    )}
                                 </div>
                                 <div className="mb-2">
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>

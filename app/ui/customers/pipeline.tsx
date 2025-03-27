@@ -50,7 +50,13 @@ export function Pipeline({
                         const isAdmin = userRole === 'admin';
                         const isAssigned = currentUser === item.entrevistador;
                         const hasPermission = isAdmin || isAssigned;
-
+                        if (title === "Hired/Rejected") {
+                            if (item.statussolicitud === "5") {
+                                step = "view_print"
+                            } else {
+                                step = "view_rejected"
+                            }
+                        }
                         return (
                             <div
                                 key={item.id}
