@@ -26,7 +26,7 @@ export function CardsClient({ cardNames, results }: CardsClientProps) {
                             key={name}
                             title={name}
                             value={0}
-                            type={name as 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Total'}
+                            type={name as 'Meta_business' | 'Indeed' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Empleos' | 'Feriaempleo' | 'Total'}
                         />
                     ))}
                 </div>
@@ -47,7 +47,7 @@ export function CardsClient({ cardNames, results }: CardsClientProps) {
                         key={source.fuente}
                         title={source.fuente}
                         value={source.total}
-                        type={source.fuente as 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Total'}
+                        type={source.fuente as 'Meta_business' | 'Indeed' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Empleos' | 'Feriaempleo' | 'Total'}
                     />
                 ))}
             </div>
