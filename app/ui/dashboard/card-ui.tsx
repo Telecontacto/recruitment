@@ -11,12 +11,14 @@ import {
 import { montserrat } from '@/app/ui/fonts';
 
 const sourceIconMap: { [key: string]: any } = {
-    'Facebook': () => <CIcon icon={cibFacebook} className="h-5 w-5 text-gray-700 dark:text-white" />,
+    'Meta_business': () => <CIcon icon={cibFacebook} className="h-5 w-5 text-gray-700 dark:text-white" />,
     'Instagram': () => <CIcon icon={cibInstagram} className="h-5 w-5 text-gray-700 dark:text-white" />,
     'LinkedIn': () => <CIcon icon={cibLinkedin} className="h-5 w-5 text-gray-700 dark:text-white" />,
     'Indeed': () => <CIcon icon={cibIndeed} className="h-5 w-5 text-gray-700 dark:text-white" />,
-    'Zip': UserCircleIcon,
+    'ZipRecruiter': UserCircleIcon,
     'Perfil': UserCircleIcon,
+    'Empleos': UserCircleIcon,
+    'Feriaempleo': UserCircleIcon,
     'Web': GlobeAltIcon,
     'Total': HashtagIcon,
 };
@@ -28,7 +30,7 @@ export function Card({
 }: {
     title: string;
     value: number | string;
-    type: 'Facebook' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Total';
+    type: 'Meta_business' | 'Indeed' | 'Instagram' | 'LinkedIn' | 'Web' | 'ZipRecruiter' | 'Perfil' | 'Empleos' | 'Feriaempleo' | 'Total';
 }) {
     const IconComponent = sourceIconMap[type] || GlobeAltIcon;
 

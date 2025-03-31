@@ -7,7 +7,7 @@ export default function CardWrapper({ startDate, endDate }: { startDate: string,
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const cardNames = ['Facebook', 'Indeed', 'Instagram', 'LinkedIn', 'Web', 'ZipRecruiter', 'Perfil'];
+  const cardNames = ['Meta_business', 'Indeed', 'Instagram', 'LinkedIn', 'Web', 'ZipRecruiter', 'Perfil', 'Empleos', 'Feriaempleo'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +51,8 @@ export default function CardWrapper({ startDate, endDate }: { startDate: string,
     })),
     { fuente: 'Total', total: totalApplications }
   ];
+
+  console.log('Complete Results:', resultMap);
 
   return (
     <>
