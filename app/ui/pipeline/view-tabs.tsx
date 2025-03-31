@@ -10,7 +10,8 @@ import {
     UserCircleIcon,
     PhoneIcon,
     BriefcaseIcon,
-    DocumentIcon
+    DocumentIcon,
+    PencilSquareIcon
 } from '@heroicons/react/24/outline';
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -84,7 +85,8 @@ export default function ViewApplication({
                         <Tab label="Work & Hours Information" {...a11yProps(1)} className="dark:text-white" />
                         <Tab label="Languages & Education" {...a11yProps(2)} className="dark:text-white" />
                         <Tab label="Previous Employments" {...a11yProps(3)} className="dark:text-white" />
-                        <Tab label="Resume" {...a11yProps(4)} className="dark:text-white" />
+                        <Tab label="Test Questions" {...a11yProps(4)} className="dark:text-white" />
+                        <Tab label="Resume" {...a11yProps(5)} className="dark:text-white" />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
@@ -891,6 +893,196 @@ export default function ViewApplication({
                     </div>
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={4}>
+                    <div className="rounded-md bg-gray-200 dark:bg-gray-700 p-4 md:p-6">
+                        <h2 className="text-xl font-bold mb-6 dark:text-white">Test Questions and Answers</h2>
+
+                        {/* Part 1: Grammar and Orthography */}
+                        <div className="mb-8">
+                            <h3 className="text-lg font-semibold mb-4 dark:text-white flex items-center">
+                                <PencilSquareIcon className="h-5 w-5 mr-2" />
+                                PART 1: Grammar and Orthography
+                            </h3>
+                            <div className="bg-white dark:bg-gray-800 rounded-md p-4 border border-gray-300 dark:border-gray-600">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {data[0].Gramatica1 && (
+                                        <>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">1. comunicasion</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica1 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">2. tranferensia</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica2 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">3. facturasion</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica3 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">4. renobasion</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica4 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">5. resivio</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica5 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">6. cuviertas</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica6 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">7. responsabilidad</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica7 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">8. polisa</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica8 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">9. atrabez</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica9 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">10. organisasiones</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica10 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">11. elejivle</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica11 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">12. cooperatiba</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica12 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">13. agente</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica13 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">14. finnansiamiento</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica14 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">15. interrez</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica15 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">16. recivido</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica16 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">17. acecta</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica17 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">18. prohivido</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica18 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">19. rio-piedra-haight</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica19 || "N/A"}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">20. esfuerso</p>
+                                                <p className="font-medium dark:text-white">{data[0].Gramatica20 || "N/A"}</p>
+                                            </div>
+                                        </>
+                                    )}
+                                    {!data[0].Gramatica1 && (
+                                        <div className="col-span-3 text-center py-6 dark:text-gray-400">
+                                            <p>No grammar test data available</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Part 2: Case Discussion */}
+                        <div className="mb-8">
+                            <h3 className="text-lg font-semibold mb-4 dark:text-white flex items-center">
+                                <PencilSquareIcon className="h-5 w-5 mr-2" />
+                                PART 2: Case Discussion
+                            </h3>
+
+                            {/* Case 1 */}
+                            <div className="bg-white dark:bg-gray-800 rounded-md p-4 border border-gray-300 dark:border-gray-600 mb-4">
+                                <h4 className="font-medium text-lg mb-3 dark:text-white">Call #1</h4>
+
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                        1. An upset and angry customer calls, indicating that they were provided with incorrect information.
+                                        The customer wishes to make a complaint, is saying profanities, and is yelling on the phone.
+                                    </p>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <p className="text-sm dark:text-white">{data[0].Ejercicio1_1 || "No answer provided"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                        2. An indignant customer calls because an incorrect amount was debited from their checking account.
+                                        The customer is upset and wants to speak to a supervisor.
+                                    </p>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <p className="text-sm dark:text-white">{data[0].Ejercicio1_2 || "No answer provided"}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Case 2 */}
+                            <div className="bg-white dark:bg-gray-800 rounded-md p-4 border border-gray-300 dark:border-gray-600">
+                                <h4 className="font-medium text-lg mb-3 dark:text-white">Call #2</h4>
+
+                                <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                                    <p className="mb-2">
+                                        Javier Pérez has been a SolCorp customer for 3 months. He has always made his payments by phone.
+                                        He indicates that he is upset and disappointed with the company because he paid on time at the payment office
+                                        and yet his service was suspended. He comments that if the situation is not resolved,
+                                        he will be canceling his service with the company.
+                                    </p>
+                                    <p className="mb-1 font-medium">Data for the service representative:</p>
+                                    <ul className="list-disc pl-5">
+                                        <li>Phone payment is reflected automatically, but payment through a kiosk takes two business days if made after 3pm</li>
+                                        <li>The system indicates that the customer paid at 4pm</li>
+                                        <li>Payment evidence must be submitted in person</li>
+                                    </ul>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                        1. Taking into account the information provided, how would you explain to Mr. Pérez
+                                        the reason why his service was suspended?
+                                    </p>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <p className="text-sm dark:text-white">{data[0].Ejercicio2_1 || "No answer provided"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                        2. The customer claims to have a receipt provided by the payment kiosk showing that
+                                        the transaction took place at 2pm. How would you explain the procedure to follow to the customer?
+                                    </p>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <p className="text-sm dark:text-white">{data[0].Ejercicio2_2 || "No answer provided"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                                        3. The customer indicates that since they cannot resolve his situation immediately,
+                                        he will be canceling the service. How would you handle the situation?
+                                    </p>
+                                    <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded">
+                                        <p className="text-sm dark:text-white">{data[0].Ejercicio2_3 || "No answer provided"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CustomTabPanel>
+
+                <CustomTabPanel value={value} index={5}>
                     <div className="rounded-md bg-gray-200 dark:bg-gray-700 p-4 md:p-6">
                         <div className="grid grid-cols-1 gap-4">
                             <div className="mb-4">
