@@ -46,11 +46,12 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
 
-        // Parse the date and adjust for timezone to avoid the day-before issue
+        // Parse the date and ensure proper formatting without adding an extra day
         const date = new Date(dateString);
+        date.setUTCHours(4, 0, 0, 0); // Set to UTC-4 to avoid timezone issues
 
         // Use the date components directly to create a timezone-agnostic date display
-        return `${date.getMonth() + 1}/${date.getDate() + 1}/${date.getFullYear()}`;
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
     };
 
     // Initialize attempts state properly

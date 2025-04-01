@@ -52,8 +52,6 @@ export default function CardWrapper({ startDate, endDate }: { startDate: string,
     { fuente: 'Total', total: totalApplications }
   ];
 
-  console.log('Complete Results:', resultMap);
-
   return (
     <>
       <div className="bg-gray-200 p-4 rounded-md">
