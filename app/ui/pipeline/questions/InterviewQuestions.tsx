@@ -80,6 +80,7 @@ const InterviewQuestions = ({ data, onChange }: { data: any, onChange: (e: Chang
                             >
                                 <option value="">Select an option</option>
                                 <option value="High School">High School</option>
+                                <option value="Associate degree">Associate degree</option>
                                 <option value="Bachelor">Bachelor</option>
                                 <option value="Master">Master</option>
                                 <option value="PhD">PhD</option>
