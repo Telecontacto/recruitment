@@ -274,6 +274,7 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                     { value: '', label: 'Select reason' },
                     { value: 'scheduled_interview', label: 'Scheduled Interview' },
                     { value: 'will_call_back', label: 'Will Call Back' },
+                    { value: 'busy', label: 'Busy (WA, Email and message through Recruit Portal)' },
                     { value: 'not_interested', label: 'Not Interested' },
                     { value: 're_hire', label: 'Re-hire Evaluation' },
                     { value: 'hang_up', label: 'Hung Up' },
@@ -283,15 +284,15 @@ const AttemptsTab: React.FC<AttemptsTabProps> = ({
                 return [
                     { value: '', label: 'Select reason' },
                     { value: 'family_message', label: 'Message left with family member' },
-                    { value: 'no_Answer1', label: 'No Answer (No Voicemail, WA, Email and message through Recruit Portal' },
-                    { value: 'no_Answer2', label: 'No Answer (No Voicemail, and message through Recruit Portal' },
-                    { value: 'no_Answer3', label: 'No Answer (No Voicemail, Email and message through Recruit Portal' },
-                    { value: 'no_Answer4', label: 'No Answer (Left Voicemail, WA, Email and message through Recruit Portal' },
-                    { value: 'no_Answer5', label: 'No Answer (Left Voicemail, Email and message through Recruit Portal' },
-                    { value: 'no_Answer6', label: 'No Answer (Left Voicemail, and message through Recruit Portal' },
-                    { value: 'out_Of_Service1', label: 'No Answer (WA, Email and message through Recruit Portal' },
-                    { value: 'out_Of_Service2', label: 'No Answer (Email and message through Recruit Portal' },
-                    { value: 'out_Of_Service3', label: 'No Answer (Message through Recruit Portal' },
+                    { value: 'no_Answer1', label: 'No Answer (No Voicemail, WA, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer2', label: 'No Answer (No Voicemail, and message through Recruit Portal)' },
+                    { value: 'no_Answer3', label: 'No Answer (No Voicemail, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer4', label: 'No Answer (Left Voicemail, WA, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer5', label: 'No Answer (Left Voicemail, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer6', label: 'No Answer (Left Voicemail, and message through Recruit Portal)' },
+                    { value: 'out_Of_Service1', label: 'No Answer (WA, Email and message through Recruit Portal)' },
+                    { value: 'out_Of_Service2', label: 'No Answer (Email and message through Recruit Portal)' },
+                    { value: 'out_Of_Service3', label: 'No Answer (Message through Recruit Portal)' },
                 ];
             default:
                 return [{ value: '', label: 'Select status first' }];

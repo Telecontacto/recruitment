@@ -290,6 +290,34 @@ export async function updateQualification(
   }
 }
 
+export async function updateExcercises(data: any) {
+  try {
+    const baseUrl = typeof window === 'undefined' 
+      ? process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000' 
+      : '';
+      
+    const response: Response = await fetch(`${baseUrl}/api/interviewPipeline/excercises`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        data
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error updating qualification: ${response.status} ${response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.error('Error updating qualification:', error);
+    throw error;
+  }
+}
+
 export async function updateFollowUp(
   attemptNumber: number, 
   status: string, 

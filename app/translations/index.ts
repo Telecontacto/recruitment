@@ -17,8 +17,27 @@ export const translations = {
     interviewComments: 'Interview Comments',
     welcome: 'Welcome',
     extendedAttempts: 'Follow-Up Attempts',
+    exercises: 'Exercises',
     
-    // Add more translations as needed
+    // Exercise tab translations
+    generalInstructions: 'General Instructions',
+    readInstructions: 'Please read the instructions carefully for each part of the test. Answer clearly for better clarity.',
+    grammarSpelling: 'PART 1: Grammar and Spelling',
+    writeCorrectWord: 'A. Write the correct word in the space provided. Answer all questions',
+    caseDiscussion: 'PART 2: Case Discussion',
+    call1: 'Call #1',
+    call2: 'Call #2',
+    handleCall: 'How would you handle the call?',
+    case1Description: '1. A customer calls upset and angry, indicating that they were given incorrect information. The customer wants to make a complaint, is using profanity, and is yelling on the phone.',
+    case2Description: '2. A customer calls outraged because an incorrect amount was debited from their checking account. The customer is upset and wants to speak with a supervisor.',
+    case3Description: 'Javier Pérez has been a SolCorp customer for 3 months. He has always made his payments by phone. He indicates that he is upset and disappointed with the company because he paid on time at a payment office and yet his service was suspended. He comments that if the situation is not resolved, he will be canceling the service with the company.',
+    serviceRepInfo: 'Information for the service representative:',
+    phonePaymentsReflected: 'Phone payments are reflected automatically, but payments through kiosks take two business days if made after 3pm',
+    systemIndicates: 'The system indicates that the customer paid at 4pm',
+    paymentEvidence: 'Payment evidence must be submitted in person',
+    question1: '1. Taking into account the information provided, how would you explain to Mr. Pérez the reason why his service was suspended?',
+    question2: '2. The customer claims to have a receipt provided by the payment kiosk showing that the transaction took place at 2pm. How would you explain the procedure to follow to the customer?',
+    question3: '3. The customer indicates that since his situation cannot be resolved immediately, he will be canceling the service. How would you handle this situation?',
   },
   es: {
     dashboard: 'Panel',
@@ -38,8 +57,27 @@ export const translations = {
     interviewComments: 'Comentarios de Entrevista',
     welcome: 'Bienvenido',
     extendedAttempts: 'Intentos de Seguimiento',
+    exercises: 'Ejercicios',
 
-    // Add more translations as needed
+    // Exercise tab translations
+    generalInstructions: 'Instrucciones Generales',
+    readInstructions: 'Favor de leer cuidadosamente las instrucciones para cada una de las partes de la prueba. Conteste claramente en letra de molde para mayor claridad.',
+    grammarSpelling: 'PARTE 1: Gramática y Ortografía',
+    writeCorrectWord: 'A. Escriba la palabra correcta en el espacio provisto. Contestar todas',
+    caseDiscussion: 'PARTE 2: Discusión de Caso',
+    call1: 'Llamada #1',
+    call2: 'Llamada #2',
+    handleCall: '¿Cómo manejaría la llamada?',
+    case1Description: '1. Llama un cliente alterado y molesto, indicando que le brindaron una información incorrecta. El cliente desea hacer una reclamación, está diciendo palabras soeces y le está gritando al teléfono.',
+    case2Description: '2. Llama cliente indignado porque le debitaron de su cuenta de cheques una cantidad incorrecta. Cliente se encuentra alterado y desea hablar con un supervisor.',
+    case3Description: 'Javier Pérez es cliente de SolCorp desde hace 3 meses. Siempre ha efectuado sus pagos por teléfono. Indica que está molesto y decepcionado con la compañía ya que pagó a tiempo en oficina de pago y aún así le suspendieron el servicio. Comenta que si no resuelven la situación estará cancelando el servicio con la compañía.',
+    serviceRepInfo: 'Datos para el representante de servicio:',
+    phonePaymentsReflected: 'El pago por teléfono se refleja automáticamente, pero el pago a través de kiosko toma dos días laborables si se efectúa después de las 3pm',
+    systemIndicates: 'El sistema indica que el cliente pagó a las 4pm',
+    paymentEvidence: 'La evidencia de pago debe ser sometidas personalmente',
+    question1: '1. Tomando en cuenta la información provista, ¿cómo le explicarías al señor Pérez la razón por la que se le suspendió el servicio?',
+    question2: '2. El cliente asegura que tiene un recibo provisto por el quiosco de pago evidenciando que la transacción se llevó a cabo a las 2pm. ¿Cómo le explicarías al cliente el procedimiento a seguir?',
+    question3: '3. Cliente indica ya que no pueden resolver su situación inmediatamente estará cancelado el servicio. ¿Cómo canalizarías la situación?',
   }
 };
 

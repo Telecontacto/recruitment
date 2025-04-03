@@ -13,7 +13,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { getTranslation } from '@/app/translations';
 import { montserrat } from '@/app/ui/fonts';
 import ExtendedAttemptsTab from './questions/followUpAttempts';
-
+import ExercisesTab from './questions/ExercisesTab';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -87,8 +87,9 @@ export default function ReviewApplication({
                             {...a11yProps(3)}
                             disabled={info.remote === 'No'}
                         />
-                        <Tab label={getTranslation("interviewComments", language)} {...a11yProps(4)} />
-                        <Tab label={getTranslation("extendedAttempts", language) || "Extended Attempts"} {...a11yProps(5)} />
+                        <Tab label={getTranslation("exercises", language) || "Exercises"} {...a11yProps(4)} />
+                        <Tab label={getTranslation("interviewComments", language)} {...a11yProps(5)} />
+                        <Tab label={getTranslation("extendedAttempts", language) || "Extended Attempts"} {...a11yProps(6)} />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
@@ -104,9 +105,12 @@ export default function ReviewApplication({
                     <RemoteQuestions data={info} onChange={changeData} />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={4}>
-                    <InterviewComments data={info} onChange={changeData} />
+                    <ExercisesTab solicitorId={info.solicitorId} />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={5}>
+                    <InterviewComments data={info} onChange={changeData} />
+                </CustomTabPanel>
+                <CustomTabPanel value={value} index={6}>
                     <ExtendedAttemptsTab
                         initialData={info}
                         onUpdateInfo={(newInfo) => {

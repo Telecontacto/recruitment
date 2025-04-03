@@ -31,7 +31,7 @@ export default function SideNav() {
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <div className="flex items-center justify-between mb-4">
         <ThemeButton />
-        {/* <LanguageToggle /> */}
+        <LanguageToggle />
       </div>
       <Link
         className="mb-2 flex h-20 items-end justify-start rounded-md gunmetal p-4 md:h-40"
