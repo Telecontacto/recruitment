@@ -13,7 +13,6 @@ export default function ReviewApplication({
 }) {
     const [info, setInfo] = useState(data[0]);
     const themeContext = useContext(ThemeContext);
-    const isDarkMode = themeContext?.isDarkMode ?? false;
     const { language } = useLanguage();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

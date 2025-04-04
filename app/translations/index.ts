@@ -18,6 +18,13 @@ export const translations = {
     welcome: 'Welcome',
     extendedAttempts: 'Follow-Up Attempts',
     exercises: 'Exercises',
+    rejectionDetails: 'Rejection Details',
+    rejectionReason: 'Reason for Rejection',
+    typeRejectionReason: 'Type the reason for rejection here...',
+    reviewedBy: 'Reviewed By',
+    enterYourName: 'Enter your name',
+    rejectionDate: 'Rejection Date',
+    rejectionDatePlaceholder: 'Rejection Date',
     
     // Exercise tab translations
     generalInstructions: 'General Instructions',
@@ -58,6 +65,13 @@ export const translations = {
     welcome: 'Bienvenido',
     extendedAttempts: 'Intentos de Seguimiento',
     exercises: 'Ejercicios',
+    rejectionDetails: 'Detalles de Rechazo',
+    rejectionReason: 'Razón de Rechazo',
+    typeRejectionReason: 'Escriba la razón del rechazo aquí...',
+    reviewedBy: 'Revisado Por',
+    enterYourName: 'Ingrese su nombre',
+    rejectionDate: 'Fecha de Rechazo',
+    rejectionDatePlaceholder: 'Fecha de Rechazo',
 
     // Exercise tab translations
     generalInstructions: 'Instrucciones Generales',

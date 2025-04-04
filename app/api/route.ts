@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       FROM
         RECLUTAMIENTO_SOLICITUDES a
       WHERE
-        cast(a.fecha as date) between @param1 and @param2
+        cast(a.fecha as date) >= '2025-03-01'
       ORDER BY
         a.fecha DESC
     `;

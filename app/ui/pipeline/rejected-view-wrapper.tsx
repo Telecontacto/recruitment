@@ -4,7 +4,6 @@ import StageSelector from '@/app/ui/pipeline/stage-selector';
 import CloseButton from '@/app/ui/pipeline/close-button';
 import ViewApplication from '@/app/ui/pipeline/rejected-tabs';
 import { montserrat } from '@/app/ui/fonts';
-import EditApplicationForm from '@/app/ui/pipeline/edit-form'
 
 export default function ViewApplicantWrapper({
     applicant,
@@ -29,12 +28,6 @@ export default function ViewApplicantWrapper({
                         { label: applicant, href: `/dashboard/pipeline/${id}/interview-applicant`, active: true },
                     ]}
                 />
-                {session?.user?.role === "admin" && (
-                    <EditApplicationForm
-                        id={Number(id)}
-                        interviewer={applicantData[0].entrevistador}
-                    />
-                )}
                 <div className="flex items-center gap-4">
                     <StageSelector
                         currentStage="interview"

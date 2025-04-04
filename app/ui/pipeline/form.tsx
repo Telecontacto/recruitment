@@ -164,6 +164,7 @@ export default function Form({ session }: { session: any }) {
         <Pipelines
           results={results}
           session={session}
+          dateRange={{ startDate, endDate }} // Pass the date range to Pipelines
         />
       )}
       <CreateApplicantModal

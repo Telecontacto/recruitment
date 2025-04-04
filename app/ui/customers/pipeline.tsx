@@ -18,6 +18,7 @@ export function Pipeline({
     onDrop,
     currentUser,
     userRole,
+    dateRange,
 }: {
     title: string;
     stageNumber: string;
@@ -33,8 +34,29 @@ export function Pipeline({
     onDragStart: (item: any) => void;
     onDrop: (stage: string) => void;
     currentUser: string;
-    userRole: string; // Add role for authorization
+    userRole: string;
+    dateRange: { startDate: string | null; endDate: string | null };
 }) {
+    // Filter items based on date range for "Received" and "Hired/Rejected" pipes
+    const filteredRes = (title === "Received" || title === "Hired/Rejected") && (dateRange.startDate || dateRange.endDate)
+        ? res.filter(item => {
+            const itemDate = new Date(item.Fecha);
+            const startDateFilter = dateRange.startDate ? new Date(dateRange.startDate) : null;
+            const endDateFilter = dateRange.endDate ? new Date(dateRange.endDate) : null;
+
+            // Set time to beginning/end of day for more accurate comparison
+            if (startDateFilter) startDateFilter.setHours(0, 0, 0, 0);
+            if (endDateFilter) {
+                endDateFilter.setHours(23, 59, 59, 999);
+            }
+
+            // Check if date is within range
+            const isAfterStart = startDateFilter ? itemDate >= startDateFilter : true;
+            const isBeforeEnd = endDateFilter ? itemDate <= endDateFilter : true;
+
+            return isAfterStart && isBeforeEnd;
+        })
+        : res;
 
     return (
         <>
@@ -45,7 +67,7 @@ export function Pipeline({
             >
                 <h2 className={`${montserrat.className} mb-4 text-xl md:text-2xl`}>{title}</h2>
                 <div className="applications">
-                    {res.map((item) => {
+                    {filteredRes.map((item) => {
                         // Check if user has permission to interact with this application
                         const isAdmin = userRole === 'admin';
                         const isAssigned = currentUser === item.entrevistador;
@@ -142,18 +164,20 @@ export function BlankPipeline({
 
 export function Pipelines({
     results,
-    session
+    session,
+    dateRange,
 }: {
     results: any,
-    session: any
+    session: any,
+    dateRange: { startDate: string; endDate: string }, // Accept date range from props
 },
 ) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isHRModalOpen, setHRModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [interviewerFilter, setInterviewerFilter] = useState(''); // New state for interviewer filter
-    const [uniqueInterviewers, setUniqueInterviewers] = useState<string[]>([]); // State to track unique interviewers
+    const [interviewerFilter, setInterviewerFilter] = useState('');
+    const [uniqueInterviewers, setUniqueInterviewers] = useState<string[]>([]);
     const [filteredResults, setFilteredResults] = useState(results);
     const closeDeleteModal = () => setModalOpen(false);
     const closeHRModal = () => setModalOpen(false);
@@ -168,6 +192,8 @@ export function Pipelines({
     const [dragID, setDragID] = useState('')
     const [ModalMessage, setModalMessage] = useState('')
     const [ModalColor, setModalColor] = useState('')
+
+    // Remove the internal date range state since we're using props now
 
     // Extract unique interviewers from results
     useEffect(() => {
@@ -192,6 +218,8 @@ export function Pipelines({
             loadData(filtered);
         }
     }, [results, searchTerm, interviewerFilter]);
+
+    // Remove the date range handlers since they're handled in the Form component
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
@@ -435,6 +463,8 @@ export function Pipelines({
                         ))}
                     </select>
                 </div>
+
+                {/* Remove date range controls from here as they're now in the Form component */}
             </div>
             <div className="stages text-center bg-gray-200">
                 <div
@@ -453,6 +483,10 @@ export function Pipelines({
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
                     userRole={session?.user?.role}
+                    dateRange={{
+                        startDate: dateRange.startDate,
+                        endDate: dateRange.endDate
+                    }}
                 />
                 <Pipeline
                     title="In Review"
@@ -463,6 +497,10 @@ export function Pipelines({
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
                     userRole={session?.user?.role}
+                    dateRange={{
+                        startDate: dateRange.startDate,
+                        endDate: dateRange.endDate
+                    }}
                 />
                 <Pipeline
                     title="Interview"
@@ -473,6 +511,10 @@ export function Pipelines({
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
                     userRole={session?.user?.role}
+                    dateRange={{
+                        startDate: dateRange.startDate,
+                        endDate: dateRange.endDate
+                    }}
                 />
                 <Pipeline
                     title="Offered"
@@ -483,6 +525,10 @@ export function Pipelines({
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
                     userRole={session?.user?.role}
+                    dateRange={{
+                        startDate: dateRange.startDate,
+                        endDate: dateRange.endDate
+                    }}
                 />
                 <Pipeline
                     title="Hired/Rejected"
@@ -493,6 +539,10 @@ export function Pipelines({
                     onDrop={handleDrop}
                     currentUser={session?.user?.name}
                     userRole={session?.user?.role}
+                    dateRange={{
+                        startDate: dateRange.startDate,
+                        endDate: dateRange.endDate
+                    }}
                 />
             </div>
             <Modal isOpen={isModalOpen} color={ModalColor} message={ModalMessage} />
