@@ -246,8 +246,9 @@ const ExtendedAttemptsTab: React.FC<ExtendedAttemptsTabProps> = ({
             case 'contacted':
                 return [
                     { value: '', label: 'Select reason' },
-                    { value: 'rescheduled_interview', label: 'Re-scheduled Interview' },
+                    { value: 'scheduled_interview', label: 'Scheduled Interview' },
                     { value: 'will_call_back', label: 'Will Call Back' },
+                    { value: 'busy', label: 'Busy (WA, Email and message through Recruit Portal)' },
                     { value: 'not_interested', label: 'Not Interested' },
                     { value: 're_hire', label: 'Re-hire Evaluation' },
                     { value: 'hang_up', label: 'Hung Up' },
@@ -257,15 +258,15 @@ const ExtendedAttemptsTab: React.FC<ExtendedAttemptsTabProps> = ({
                 return [
                     { value: '', label: 'Select reason' },
                     { value: 'family_message', label: 'Message left with family member' },
-                    { value: 'no_Answer1', label: 'No Answer (No Voicemail, WA, Email and message through Recruit Portal' },
-                    { value: 'no_Answer2', label: 'No Answer (No Voicemail, and message through Recruit Portal' },
-                    { value: 'no_Answer3', label: 'No Answer (No Voicemail, Email and message through Recruit Portal' },
-                    { value: 'no_Answer4', label: 'No Answer (Left Voicemail, WA, Email and message through Recruit Portal' },
-                    { value: 'no_Answer5', label: 'No Answer (Left Voicemail, Email and message through Recruit Portal' },
-                    { value: 'no_Answer6', label: 'No Answer (Left Voicemail, and message through Recruit Portal' },
-                    { value: 'out_Of_Service1', label: 'No Answer (WA, Email and message through Recruit Portal' },
-                    { value: 'out_Of_Service2', label: 'No Answer (Email and message through Recruit Portal' },
-                    { value: 'out_Of_Service3', label: 'No Answer (Message through Recruit Portal' },
+                    { value: 'no_Answer1', label: 'No Answer (No Voicemail, WA, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer2', label: 'No Answer (No Voicemail, and message through Recruit Portal)' },
+                    { value: 'no_Answer3', label: 'No Answer (No Voicemail, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer4', label: 'No Answer (Left Voicemail, WA, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer5', label: 'No Answer (Left Voicemail, Email and message through Recruit Portal)' },
+                    { value: 'no_Answer6', label: 'No Answer (Left Voicemail, and message through Recruit Portal)' },
+                    { value: 'out_Of_Service1', label: 'No Answer (WA, Email and message through Recruit Portal)' },
+                    { value: 'out_Of_Service2', label: 'No Answer (Email and message through Recruit Portal)' },
+                    { value: 'out_Of_Service3', label: 'No Answer (Message through Recruit Portal)' },
                 ];
             default:
                 return [{ value: '', label: 'Select status first' }];
@@ -365,6 +366,7 @@ const ExtendedAttemptsTab: React.FC<ExtendedAttemptsTabProps> = ({
                                     <option value="applied_accidentally">Applied Accidentally</option>
                                     <option value="other_job">Found Another Job</option>
                                     <option value="duplicate">Duplicate</option>
+                                    <option value="not_interested">Not Interested</option>
                                     <option value="worked_before_nq">Already Worked With Us (NQ)</option>
                                     <option value="multiple_attempts">Multiple Attempts</option>
                                     <option value="currently_with_us">Currently is an empolyee of Telecontacto</option>
